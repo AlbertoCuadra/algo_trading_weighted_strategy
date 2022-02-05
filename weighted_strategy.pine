@@ -147,8 +147,6 @@ n_strategies() =>
         result += 1.
     if str_4
         result += 1.
-    if str_5
-        result += 1.
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Price take profit
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -176,20 +174,20 @@ weight_values(signal) =>
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Weigthed total
 // *************************************************************************************************************************************************************************************************************************************************************************
-weight_total(signal1, signal2, signal3, signal4, signal5) =>
+weight_total(signal1, signal2, signal3, signal4) =>
     1/n_strategies() * (weightStr1 * weight_values(signal1) + weightStr2 * weight_values(signal2) + weightStr3 * weight_values(signal3) + weightStr4 * weight_values(signal4) + weightStr5 * weight_values(signal5))
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Color
 // *************************************************************************************************************************************************************************************************************************************************************************
 colors(type) =>
     switch str.lower(type)
-    'buy'=> color.aqua
-    'sell' => color.gray
-    'signal' => color.orange
-    'profit' => color.green
-    'loss' => color.red
-    'info' => color.white
-    'highlights' => color.orange
+        'buy'=> color.aqua
+        'sell' => color.gray
+        'signal' => color.orange
+        'profit' => color.green
+        'loss' => color.red
+        'info' => color.white
+        'highlights' => color.orange
 
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Bar since last entry
@@ -310,38 +308,34 @@ if time >= start and time <= end
         if not str_5
             weightStr5 := 0.
         if allowShorts == true
-            w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
-        if w_total >= weightSignal
-            //strategy.close_all()
-            strategy.entry('Short', strategy.short)
+            w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4)
+            if w_total >= weightSignal
+                //strategy.close_all()
+                strategy.entry('Short', strategy.short)
         if allowLongs == true
-            w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
-        if w_total >= weightSignal
-            //strategy.close_all()
-            strategy.entry('Long', strategy.long)
+            w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4)
+            if w_total >= weightSignal
+                //strategy.close_all()
+                strategy.entry('Long', strategy.long)
     else
         if allowShorts == true
             if str_1
-            strategy.entry('Short', strategy.short, when=shortSignal1)
+                strategy.entry('Short', strategy.short, when=shortSignal1)
             if str_2
-            strategy.entry('Short', strategy.short, when=shortSignal2)
+                strategy.entry('Short', strategy.short, when=shortSignal2)
             if str_3
-            strategy.entry('Short', strategy.short, when=shortSignal3)
+                strategy.entry('Short', strategy.short, when=shortSignal3)
             if str_4
-            strategy.entry('Short', strategy.short, when=shortSignal4)
-            if str_5
-            strategy.entry('Short', strategy.short, when=shortSignal5)
+                strategy.entry('Short', strategy.short, when=shortSignal4)
         if allowLongs == true
             if str_1
-            strategy.entry('Long', strategy.long, when=longSignal1)
+                strategy.entry('Long', strategy.long, when=longSignal1)
             if str_2
-            strategy.entry('Long', strategy.long, when=longSignal2)
+                strategy.entry('Long', strategy.long, when=longSignal2)
             if str_3
-            strategy.entry('Long', strategy.long, when=longSignal3)
+                strategy.entry('Long', strategy.long, when=longSignal3)
             if str_4
-            strategy.entry('Long', strategy.long, when=longSignal4)
-            if str_5
-            strategy.entry('Long', strategy.long, when=longSignal5)
+                strategy.entry('Long', strategy.long, when=longSignal4)
 // ***************************************************************************************************************************************************************************
 // * Set Take Profits
 // ***************************************************************************************************************************************************************************
@@ -505,21 +499,21 @@ plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, col
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * All strategies
 // *************************************************************************************************************************************************************************************************************************************************************************
-w_total_long= weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
-w_total_short = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
+w_total_long= weight_total(longSignal1, longSignal2, longSignal3, longSignal4)
+w_total_short = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4)
 mPlot = plot(ohlc4, title='Price ohlc4', style=plot.style_circles, linewidth=0, display=display.none)
-upPlot = plot((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='Up Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.aqua, 0), display=display.none)
-dnPlot = plot((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='Down Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.gray, 0), display=display.none)
+upPlot = plot((longSignal1 or longSignal2 or longSignal3 or longSignal4) and (w_total_long > w_total_short) ? up : na, title='Up Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.aqua, 0), display=display.none)
+dnPlot = plot((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4) and (w_total_short > w_total_long) ? dn : na, title='Down Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.gray, 0), display=display.none)
 longFillColor = color.aqua
 shortFillColor = color.gray
 plotchar(int(weightSignal * n_strategies()), "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(int(w_total_long * n_strategies()), "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightSignal ? color.orange : color.gray)
 plotchar(int(w_total_short * n_strategies()), "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightSignal ? color.orange : color.gray)
-plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
-plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
+plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
+plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
 fill(mPlot, upPlot, title='UpTrend Highligter', color=longFillColor, transp=80)
 fill(mPlot, dnPlot, title='DownTrend Highligter', color=shortFillColor, transp=80)
-plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long >= weightSignal)) and showsignals ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or longSignal5) and (w_total_short >= weightSignal)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4) and (w_total_long >= weightSignal)) and showsignals ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4) and (w_total_short >= weightSignal)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
 //COLORS
 // color_bar = strategy.position_size > 0 ? #00c3ff : strategy.position_size < 0 ? #ff0062 : color.gray
