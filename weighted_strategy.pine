@@ -448,7 +448,7 @@ if time >= start and time <= end
 // *************************************************************************************************************************************************************************************************************************************************************************
 price_stop = strategy.position_size > 0 ? price_stop_long : price_stop_short
 
-plotchar(volume[2] / volume[1], "Since entry [bars]", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(volume[2] / volume[1], "Volume 2 / Volume 1", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(since_entry, "Since entry [bars]", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(since_close, "Since close/TP [bars]", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(strategy.position_avg_price, "Average position price", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
