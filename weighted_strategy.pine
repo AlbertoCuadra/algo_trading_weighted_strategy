@@ -1,0 +1,528 @@
+//@version=5
+strategy(title='Weighted Strategy 2 - v3', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=1)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// COMMENTS
+// *************************************************************************************************************************************************************************************************************************************************************************
+ 
+// *************************************************************************************************************************************************************************************************************************************************************************
+// INPUTS
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Type trading
+allowLongs                  = input.bool    (true,  'Allow Longs',                                                                          group='Trading type')
+allowShorts                 = input.bool    (true,  'Allow Shorts',                                                                         group='Trading type')
+// * Datastamp
+FromDay                     = input.int     (1,     'From Day',                              minval=1,       maxval=31,                     group='DataStamp')
+FromMonth                   = input.int     (1,     'From Month',                            minval=1,       maxval=12,                     group='DataStamp')
+FromYear                    = input.int     (2021,  'From Year',                             minval=1980,    maxval=9999,                   group='DataStamp')
+ToDay                       = input.int     (1,     'To Day',                                minval=1,       maxval=31,                     group='DataStamp')
+ToMonth                     = input.int     (1,     'To Month',                              minval=1,       maxval=12,                     group='DataStamp')
+ToYear                      = input.int     (9999,  'To Year',                               minval=2017,    maxval=9999,                   group='DataStamp')
+// * Stop loss
+stoploss                    = input         (true,  'Stop loss',                                                                            group='Stop loss')
+movestoploss                = input         (true,  'Move stop loss',                                                                       group='Stop loss')
+stoplossPerc                = input.float   (5.0,   'Stop Loss %',                           minval=0,       maxval=100,                    group='Stop loss') * 0.01
+movestoplossFactor          = input.float   (20.0,  'Move stop loss factor %',                                                              group='Stop loss') * 0.01 + 1
+stopSource                  = input         (close, 'Stop Source',                                                                          group='Stop loss')
+// * Take profits
+takeProfits                 = input         (false, 'Take profits',                                                                         group='Take Profits')
+retrade                     = input         (false, 'Retrade',                                                                              group='Take Profits')
+longProfitPerc              = input.float   (10,    'Long - take profits each x (%)',         minval=0.0,      maxval=999,      step=1,     group='Take Profits') * 0.01
+longProfitQty               = input.float   (10,    'Long - take x (%) from open position',   minval=0.0,      maxval=100,      step=1,     group='Take Profits')
+shortProfitPerc             = input.float   (10,    'Short - take profits each x (%)',        minval=0.0,      maxval=999,      step=1,     group='Take Profits') * 0.01
+shortProfitQty              = input.float   (10,    'Short - take x (%) from open position',  minval=0.0,      maxval=100,      step=1,     group='Take Profits')
+// * Delays
+delay                       = input.int     (1,     'Candles delay',                          minval=1,                                     group='Delays')
+delay_volume                = input.int     (1,     'Candles delay volume',                   minval=1,                                     group='Delays')
+delay_exit                  = input.int     (5,     'Candles delay exit',                     minval=1,                                     group='Delays')
+// * Inputs Weigthed strategies
+str_0                       = input         (true,  'Strategy 0: Weighted Strategy',                                                        group='Weights')
+weightSignal                = input.float   (2,     'Weight Signal entry [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+weightStr1                  = input.float   (1,     'Weight Strategy 1   [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+weightStr2                  = input.float   (1,     'Weight Strategy 2   [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+weightStr3                  = input.float   (1,     'Weight Strategy 3   [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+weightStr4                  = input.float   (1,     'Weight Strategy 4   [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+weightStr5                  = input.float   (1,     'Weight Strategy 5   [0, 5]',             minval=0,        maxval=5,        step=1,     group='Weights')
+// * Inputs strategy 1: MACD 
+str_1                       = input         (true,  'Strategy 1: MACD',                                                                     group='Strategy 1: MACD')
+MA1Period                   = input.int     (12,    'MA 1',                                   minval=1,        maxval=9999,     step=1,     group='Strategy 1: MACD')
+MA1Type                     = input.string  ('EMA', 'MA1 Type',    options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'],     group='Strategy 1: MACD')
+MA1Source                   = input         (close, 'MA1 Source',                                                                           group='Strategy 1: MACD')
+MA2Period                   = input.int     (26,    'MA 2',                                   minval=1,        maxval=9999,     step=1,     group='Strategy 1: MACD')
+MA2Type                     = input.string  ('EMA', 'MA2 Type',    options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'],     group='Strategy 1: MACD')
+MA2Source                   = input         (close, 'MA2 Source',                                                                           group='Strategy 1: MACD')
+// * Inputs strategy 2: Stoch RSI oversold/overbought
+str_2                       = input         (true,  'Strategy 2: Stoch RSI',                                                                group='Strategy 2: Stoch RSI')
+longTrailPerc               = input.float   (150,   'Trail volume Long (%)',                  minval=0.0,                       step=1,     group='Strategy 2: Stoch RSI') * 0.01
+shortTrailPerc              = input.float   (150,   'Trail volume Short (%)',                 minval=0.0,                       step=1,     group='Strategy 2: Stoch RSI') * 0.01
+longRSI                     = input.float   (85,    'Exit SRSI Long (%)',                     minval=0.0,                       step=1,     group='Strategy 2: Stoch RSI')
+shortRSI                    = input.float   (15,    'Exit SRSI Short (%)',                    minval=0.0,                       step=1,     group='Strategy 2: Stoch RSI')
+lengthRSI                   = input         (14,    'RSI Length',                                                                           group='Strategy 2: Stoch RSI')
+lengthStoch                 = input         (14,    'RSI Stochastic',                                                                       group='Strategy 2: Stoch RSI')
+smoothK                     = input         (3,     'Smooth k',                                                                             group='Strategy 2: Stoch RSI')
+// * Inputs strategy 3: RSI oversold/overbought
+str_3                       = input         (true,  'Strategy 3: RSI',                                                                      group='Strategy 3: RSI')
+longRSI2                    = input.float   (70,    'Exit RSI Long (%)',                      minval=0.0,                       step=1,     group='Strategy 3: RSI')
+shortRSI2                   = input.float   (30,    'Exit RSI Short (%)',                     minval=0.0,                       step=1,     group='Strategy 3: RSI')
+// * Inputs strategy 4: Supertrend
+str_4                       = input         (true,  'Strategy 4: Supertrend',                                                               group='Strategy 4: Supertrend')
+Periods                     = input         (3,     'ATR Period',                                                                           group='Strategy 4: Supertrend')
+source_4                    = input         (hl2,   'Source',                                                                               group='Strategy 4: Supertrend')
+Multiplier                  = input.float   (2.0,   'ATR Multiplier',                                                           step=0.1,   group='Strategy 4: Supertrend')
+changeATR                   = input         (true,  'Change ATR Calculation Method ?',                                                      group='Strategy 4: Supertrend')
+// * Inputs strategy 5: MA CROSSES 
+str_5                       = input         (true,  'Strategy 5: MA CROSSES',                                                               group='Strategy 5: MA CROSSES')
+MA12Period                  = input.int     (22,    'MA 1',                                   minval=1,        maxval=9999,     step=1,     group='Strategy 5: MA CROSSES')
+MA12Type                    = input.string  ('EMA', 'MA1 Type',    options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'],     group='Strategy 5: MA CROSSES')
+MA12Source                  = input         (close, 'MA1 Source',                                                                           group='Strategy 5: MA CROSSES')
+MA22Period                  = input.int     (55,    'MA 2',                                   minval=1,        maxval=9999,     step=1,     group='Strategy 5: MA CROSSES')
+MA22Type                    = input.string  ('EMA', 'MA2 Type',    options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'],     group='Strategy 5: MA CROSSES')
+MA22Source                  = input         (close, 'MA2 Source',                                                                           group='Strategy 5: MA CROSSES')
+// * Miscellaneous
+showsignals                 = input         (true,  'Show Buy/Sell Signals ?', group='Miscellaneous')
+
+
+// *************************************************************************************************************************************************************************************************************************************************************************
+// ABBREVIATIONS
+// *************************************************************************************************************************************************************************************************************************************************************************
+// TP: Take profits
+// SL: Stop-Loss
+// *************************************************************************************************************************************************************************************************************************************************************************
+// GLOBAL VARIABLES
+// *************************************************************************************************************************************************************************************************************************************************************************
+start                  = timestamp(FromYear, FromMonth, FromDay, 00, 00)  // backtest start window
+end                    = timestamp(ToYear, ToMonth, ToDay, 23, 59)        // backtest finish window
+var FLAG_FIRST         = false
+var price_stop_long    = 0.
+var price_stop_short   = 0.
+var ProfitQty          = 0. // Quantity to close per TP from open position
+var ProfitPerc         = 0. // Percentage to take profits since open position or last TP
+var nextTP             = 0. // Next target to take profits
+var since_entry        = 0  // Numbner of bars since open last postion
+var since_close        = 0  // Number of bars since close or TP/STOP last position
+
+// * Compute profit quantity and profit percentage
+if strategy.position_size > 0
+    ProfitQty := longProfitQty
+    ProfitPerc := longProfitPerc
+else if strategy.position_size < 0
+    ProfitQty := shortProfitQty
+    ProfitPerc := shortProfitPerc
+else
+    nextTP := 0. // Next Take Profit target (out of market)
+
+// *************************************************************************************************************************************************************************************************************************************************************************    
+// FUNCTIONS
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * MA type
+// *************************************************************************************************************************************************************************************************************************************************************************
+ma(MAType, MASource, MAPeriod) =>
+    if MAType == 'SMA'
+        ta.sma(MASource, MAPeriod)
+    else if MAType == 'EMA'
+        ta.ema(MASource, MAPeriod)
+    else if MAType == 'WMA'
+        ta.wma(MASource, MAPeriod)
+    else if MAType == 'RMA'
+        ta.rma(MASource, MAPeriod)
+    else if MAType == 'HMA'
+        ta.wma(2 * ta.wma(MASource, MAPeriod / 2) - ta.wma(MASource, MAPeriod), math.round(math.sqrt(MAPeriod)))
+    else if MAType == 'DEMA'
+        e = ta.ema(MASource, MAPeriod)
+        2 * e - ta.ema(e, MAPeriod)
+    else if MAType == 'TEMA'
+        e = ta.ema(MASource, MAPeriod)
+        3 * (e - ta.ema(e, MAPeriod)) + ta.ema(ta.ema(e, MAPeriod), MAPeriod)
+    else if MAType == 'VWMA'
+        ta.vwma(MASource, MAPeriod)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Number strategies
+// *************************************************************************************************************************************************************************************************************************************************************************
+n_strategies() =>
+    var result = 0.
+    if str_1
+        result := 1.
+    if str_2
+        result += 1.
+    if str_3
+        result += 1.
+    if str_4
+        result += 1.
+    if str_5
+        result += 1.
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Price take profit
+// *************************************************************************************************************************************************************************************************************************************************************************
+price_takeProfit(percentage, N) =>
+    if strategy.position_size > 0
+        strategy.position_avg_price * (1 + N * percentage)
+    else
+        strategy.position_avg_price * (1 - N * percentage)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Percentage take profit
+// *************************************************************************************************************************************************************************************************************************************************************************
+perc_takeProfit(percentage) =>
+    if strategy.position_size > 0
+        percentage
+    else
+        percentage
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Weigthed values
+// *************************************************************************************************************************************************************************************************************************************************************************
+weight_values(signal) =>
+    if signal
+        weight = 1.0
+    else
+        weight = 0.
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Weigthed total
+// *************************************************************************************************************************************************************************************************************************************************************************
+weight_total(signal1, signal2, signal3, signal4, signal5) =>
+    1/n_strategies() * (weightStr1 * weight_values(signal1) + weightStr2 * weight_values(signal2) + weightStr3 * weight_values(signal3) + weightStr4 * weight_values(signal4) + weightStr5 * weight_values(signal5))
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Color
+// *************************************************************************************************************************************************************************************************************************************************************************
+colors(type) =>
+    switch str.lower(type)
+        'buy'        => color.aqua
+        'sell'       => color.gray
+        'signal'     => color.orange
+        'profit'     => color.green
+        'loss'       => color.red
+        'info'       => color.white
+        'highlights' => color.orange
+            
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Bar since last entry
+// *************************************************************************************************************************************************************************************************************************************************************************
+bars_since_entry() =>
+    bar_index - strategy.opentrades.entry_bar_index(0)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Bar since close or TP/STOP
+// *************************************************************************************************************************************************************************************************************************************************************************
+bars_since_close() =>
+    ta.barssince(ta.change(strategy.closedtrades))
+// *************************************************************************************************************************************************************************************************************************************************************************
+// ADDITIONAL GLOBAL VARIABLES
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Compute time since last entry and last close/TP position    
+since_entry := bars_since_entry()
+since_close := bars_since_close()
+if strategy.opentrades == 0
+    since_entry := delay_exit
+if strategy.closedtrades == 0
+    since_close := delay_exit
+// *************************************************************************************************************************************************************************************************************************************************************************
+// STRATEGIES
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 1: MACD
+// *************************************************************************************************************************************************************************************************************************************************************************
+MA1          = ma(MA1Type, MA1Source, MA1Period)
+MA2          = ma(MA2Type, MA2Source, MA2Period)
+
+MACD         = MA1 - MA2
+signal       = ma('SMA', MACD, 9)
+trend        = MACD - signal
+
+long         = MACD > signal
+short        = MACD < signal
+proportion   = math.abs(MACD / signal)
+
+// * Conditions
+longSignal1  = long  and     long[delay - 1]  and not long[delay]
+shortSignal1 = short and     short[delay - 1] and not short[delay]
+closelong1   = short and not long[delay]
+closeshort1  = long  and not short[delay]
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 2: STOCH RSI OVERSOLD/OVERBOUGHT
+// *************************************************************************************************************************************************************************************************************************************************************************
+rsi                 = ta.rsi(close, lengthRSI)
+srsi                = ta.stoch(rsi, rsi, rsi, lengthStoch)
+k                   =  ma('SMA', srsi, smoothK)
+isRsiOB             = k >= longRSI
+isRsiOS             = k <= shortRSI
+volumeRSI_condition = volume[2] > volume[3] and volume[2] > volume[4] and volume[2] > volume[5]
+
+// * Conditions
+condition_OB        = strategy.position_size > 0 and volume[2] / volume[1] > 1.0 + longTrailPerc and isRsiOB and volumeRSI_condition
+condition_OS        = strategy.position_size < 0 and volume[2] / volume[1] > 1.0 + shortTrailPerc and isRsiOS and volumeRSI_condition
+longSignal2         = isRsiOS[delay_volume] and not isRsiOB and since_entry >= delay_exit and since_close >= delay_exit
+shortSignal2        = isRsiOB[delay_volume] and not isRsiOS and since_entry >= delay_exit and since_close >= delay_exit
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 3: RSI OVERSOLD/OVERBOUGHT
+// *************************************************************************************************************************************************************************************************************************************************************************
+isRsiOB2            = rsi >= longRSI2
+isRsiOS2            = rsi <= shortRSI2
+
+// * Conditions
+condition_OB2       = strategy.position_size > 0 and volume[2] / volume[1] > 1.0 + longTrailPerc and isRsiOB2 and volumeRSI_condition
+condition_OS2       = strategy.position_size < 0 and volume[2] / volume[1] > 1.0 + shortTrailPerc and isRsiOS2 and volumeRSI_condition
+longSignal3         = isRsiOS2[delay_volume] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
+shortSignal3        = isRsiOB2[delay_volume] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 4: SUPERTREND
+// *************************************************************************************************************************************************************************************************************************************************************************
+atr2                = ma('SMA', ta.tr, Periods)
+atr                 = changeATR ? ta.atr(Periods) : atr2
+up                  = source_4 - Multiplier * atr
+up1                 = nz(up[1], up)
+up                 := close[1] > up1 ? math.max(up, up1) : up
+
+dn                  = source_4 + Multiplier * atr
+dn1                 = nz(dn[1], dn)
+dn                 := close[1] < dn1 ? math.min(dn, dn1) : dn
+
+trend              := 1
+trend              := nz(trend[1], trend)
+trend              := trend == -1 and close > dn1 ? 1 : trend == 1 and close < up1 ? -1 : trend
+// * Conditions
+longSignal4 = trend == 1 and trend[delay - 1] == 1 and trend[delay] == -1
+shortSignal4 = trend == -1 and trend[delay - 1] == -1 and trend[delay] == 1
+changeCond = trend != trend[1]
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 5: MA CROSSES
+// *************************************************************************************************************************************************************************************************************************************************************************
+MA12         = ma(MA12Type, MA12Source, MA12Period)
+MA22         = ma(MA22Type, MA22Source, MA22Period)
+
+long5        = MA12 > MA22
+short5       = MA12 < MA22
+// * Conditions
+longSignal5  = long5  and     long5[delay - 1]  and not long5[delay]
+shortSignal5 = short5 and     short5[delay - 1] and not short5[delay]
+closelong5   = short5 and not long5[delay]
+closeshort5  = long5  and not short5[delay]
+// *************************************************************************************************************************************************************************************************************************************************************************
+// STRATEGY ENTRIES AND EXITS
+// *************************************************************************************************************************************************************************************************************************************************************************
+if time >= start and time <= end
+    // ***************************************************************************************************************************************************************************
+    // * Set Entries
+    // ***************************************************************************************************************************************************************************
+    if str_0
+        if not str_1
+            weightStr1 := 0.
+        if not str_2
+            weightStr2 := 0.
+        if not str_3
+            weightStr3 := 0.
+        if not str_4
+            weightStr4 := 0.
+        if not str_5
+            weightStr5 := 0.
+        if allowShorts == true
+            w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
+            if w_total >= weightSignal
+                //strategy.close_all()
+                strategy.entry('Short', strategy.short)
+        if allowLongs == true
+            w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
+            if w_total >= weightSignal
+                //strategy.close_all()
+                strategy.entry('Long', strategy.long)
+    else
+        if allowShorts == true
+            if str_1
+                strategy.entry('Short', strategy.short, when=shortSignal1)
+            if str_2
+                strategy.entry('Short', strategy.short, when=shortSignal2)
+            if str_3
+                strategy.entry('Short', strategy.short, when=shortSignal3)
+            if str_4
+                strategy.entry('Short', strategy.short, when=shortSignal4)
+            if str_5
+                strategy.entry('Short', strategy.short, when=shortSignal5)
+        if allowLongs == true
+            if str_1
+                strategy.entry('Long', strategy.long, when=longSignal1)
+            if str_2
+                strategy.entry('Long', strategy.long, when=longSignal2)
+            if str_3
+                strategy.entry('Long', strategy.long, when=longSignal3)
+            if str_4
+                strategy.entry('Long', strategy.long, when=longSignal4)
+            if str_5
+                strategy.entry('Long', strategy.long, when=longSignal5)
+    // ***************************************************************************************************************************************************************************
+    // * Set Take Profits
+    // ***************************************************************************************************************************************************************************
+    if (strategy.position_size > 0 or strategy.position_size < 0) and takeProfits
+        strategy.exit(id='TP 1', limit=price_takeProfit(ProfitPerc, 1), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+        strategy.exit(id='TP 2', limit=price_takeProfit(ProfitPerc, 2), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+        strategy.exit(id='TP 3', limit=price_takeProfit(ProfitPerc, 3), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+        strategy.exit(id='TP 4', limit=price_takeProfit(ProfitPerc, 4), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+        strategy.exit(id='TP 5', limit=price_takeProfit(ProfitPerc, 5), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+        strategy.exit(id='TP 6', limit=price_takeProfit(ProfitPerc, 6), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+    // ***************************************************************************************************************************************************************************
+    // * Set Stop loss
+    // ***************************************************************************************************************************************************************************
+    if strategy.position_size > 0
+        if since_close == 0
+            if high > price_takeProfit(ProfitPerc, 6)
+                n = 6
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := na
+            else if high > price_takeProfit(ProfitPerc, 5)
+                n = 5
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if high > price_takeProfit(ProfitPerc, 4)
+                n = 4
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if high > price_takeProfit(ProfitPerc, 3)
+                n = 3
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if high > price_takeProfit(ProfitPerc, 2)
+                n = 2
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if high > price_takeProfit(ProfitPerc, 1)
+                n = 1
+                if movestoploss
+                    price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+        if since_entry == 0
+            n = 0
+            price_stop_long := strategy.position_avg_price * (1 - stoplossPerc)
+            nextTP := price_takeProfit(ProfitPerc, n + 1)
+    if strategy.position_size < 0
+        if since_close == 0
+            if low < price_takeProfit(ProfitPerc, 6)
+                n = 6
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := na
+            else if low < price_takeProfit(ProfitPerc, 5)
+                n = 5
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if low < price_takeProfit(ProfitPerc, 4)
+                n = 4
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if low < price_takeProfit(ProfitPerc, 3)
+                n = 3
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if low < price_takeProfit(ProfitPerc, 2)
+                n = 2
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+            else if low < price_takeProfit(ProfitPerc, 1)
+                n = 1
+                if movestoploss
+                    price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                nextTP := price_takeProfit(ProfitPerc, n + 1)
+        if since_entry == 0
+            n = 0
+            price_stop_short := strategy.position_avg_price * (1 + stoplossPerc)
+            nextTP := price_takeProfit(ProfitPerc, n + 1)
+    // ***************************************************************************************************************************************************************************
+    // * Set Exits
+    // ***************************************************************************************************************************************************************************
+    if allowLongs == true and allowShorts == false
+        strategy.close('Long', when=closelong1 or closelong5, qty_percent=100, comment='LONG')
+    if allowLongs == false and allowShorts == true
+        strategy.close('Short', when=closeshort1 or closeshort5, qty_percent=100, comment='SHORT')
+    if allowShorts == true and strategy.position_size < 0 and stoploss
+        strategy.close('Short', when=stopSource >= price_stop_short, qty_percent=100, comment='STOP')
+        // strategy.exit(id='STOP', from_entry='Short', stop=price_stop_short, comment='STOP')
+    if allowLongs == true and strategy.position_size > 0 and stoploss
+        strategy.close('Long', when=stopSource <= price_stop_long, qty_percent=100, comment='STOP')
+        // strategy.exit(id='STOP', stop=price_stop_long, comment='STOP')
+// *************************************************************************************************************************************************************************************************************************************************************************
+// PLOTS
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Data window
+// *************************************************************************************************************************************************************************************************************************************************************************
+price_stop = strategy.position_size > 0 ? price_stop_long : price_stop_short
+
+plotchar(since_entry,                                   "Since entry [bars]",       "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(since_close,                                   "Since close/TP [bars]",    "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(strategy.position_avg_price,                   "Average position price",   "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(strategy.position_size,                        "Position size",            "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(nextTP,                                        "Next TP target",           "", location.top, size = size.tiny, color=color.new(color.green, 0))
+plotchar(price_stop,                                    "STOP Price",               "", location.top, size = size.tiny, color=color.new(color.red, 0))
+plotchar(strategy.opentrades,                           "Open trades",              "", location.top, size = size.tiny, color=strategy.position_size > 0 ? color.blue : color.gray)
+plotchar(strategy.netprofit,                            "Net profit [$]",           "", location.top, size = size.tiny, color=strategy.netprofit > 0 ? color.blue : color.gray)
+plotchar(strategy.grossprofit,                          "Gross profit [$]",         "", location.top, size = size.tiny, color=color.blue)  
+plotchar(strategy.grossloss,                            "Gross loss [$]",           "", location.top, size = size.tiny, color=color.gray)  
+plotchar(strategy.openprofit,                           "Unrealized P&L [$]",       "", location.top, size = size.tiny, color=strategy.openprofit > 0 ? color.blue : color.gray)
+plotchar(strategy.closedtrades,                         "Closed trades",            "", location.top, size = size.tiny, color=color.orange) 
+plotchar(strategy.wintrades/strategy.closedtrades*100,  "Winrate [%]",              "", location.top, size = size.tiny, color=strategy.wintrades/strategy.closedtrades > 60 ? color.blue : color.gray)  
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * strategy 1: MACD
+// *************************************************************************************************************************************************************************************************************************************************************************
+plot(trend,                                             'Trend',                    style=plot.style_columns, color=MACD > signal ? color.green : color.red, display=display.none, transp=30)
+plot(MACD,                                              'MACD',                     color=color.new(color.blue, 0), display=display.none)
+plot(signal,                                            'Signal',                   color=color.new(color.orange, 0), display=display.none)
+plotshape(longSignal1 and showsignals ? up : na,        'Buy MACD',                 text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(shortSignal1 and showsignals ? dn : na,       'Sell MACD',                text='MACD', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * strategy 2: Stoch RSI oversold/overbought
+// *************************************************************************************************************************************************************************************************************************************************************************
+makeShape_OB = if condition_OB
+    isRsiOB
+makeShape_OS = if condition_OS
+    isRsiOS
+plotshape(makeShape_OB ? dn : na, title='Overbought', text='OB', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(makeShape_OS ? up : na, title='Oversold', text='OS', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(longSignal2 and makeShape_OS ? up : na and showsignals ? up : na, title='Buy Stoch RSI', text='SRSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(shortSignal2 and makeShape_OB ? dn : na and showsignals ? dn : na, title='Sell Stoch RSI', text='SRSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * strategy 3: RSI
+// *************************************************************************************************************************************************************************************************************************************************************************
+plotshape(longSignal3 and showsignals ? up : na, title='Buy RSI', text='RSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(shortSignal3 and showsignals ? dn : na, title='Sell RSI', text='RSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * strategy 4: supertrend
+// *************************************************************************************************************************************************************************************************************************************************************************
+plotshape(longSignal4 and showsignals ? up : na, title='Buy Supertrend', text='Supertrend', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(shortSignal4 and showsignals ? dn : na, title='Sell Supertrend', text='Supertrend', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Buy/Sell labels
+// *************************************************************************************************************************************************************************************************************************************************************************
+plotshape(low and strategy.position_size > 0 and FLAG_FIRST ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(high and strategy.position_size < 0 and FLAG_FIRST ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Stop loss targets
+// *************************************************************************************************************************************************************************************************************************************************************************
+plot(series=(strategy.position_size > 0) ? price_stop_long : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Long Stop Loss")
+plot(series=(strategy.position_size < 0) ? price_stop_short : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Short Stop Loss")
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * TP targets
+// *************************************************************************************************************************************************************************************************************************************************************************
+plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, color=color.aqua, style=plot.style_cross, linewidth=2, transp=30, title="Next TP")
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * All strategies
+// *************************************************************************************************************************************************************************************************************************************************************************
+w_total_long    = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
+w_total_short   = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
+mPlot           = plot(ohlc4, title='Price ohlc4', style=plot.style_circles, linewidth=0, display=display.none)
+upPlot          = plot((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='Up Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.aqua, 0), display=display.none)
+dnPlot          = plot((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='Down Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.gray, 0), display=display.none)
+longFillColor   = color.aqua
+shortFillColor  = color.gray
+plotchar(int(weightSignal * n_strategies()), "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(int(w_total_long * n_strategies()), "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightSignal ? color.orange : color.gray)
+plotchar(int(w_total_short * n_strategies()), "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightSignal ? color.orange : color.gray)
+plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
+plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
+fill(mPlot, upPlot, title='UpTrend Highligter', color=longFillColor, transp=80)
+fill(mPlot, dnPlot, title='DownTrend Highligter', color=shortFillColor, transp=80)
+plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long >= weightSignal))  and showsignals ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or longSignal5) and (w_total_short >= weightSignal)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+
+
+//COLORS
+// color_bar = strategy.position_size > 0 ? #00c3ff : strategy.position_size < 0 ? #ff0062 : color.gray
