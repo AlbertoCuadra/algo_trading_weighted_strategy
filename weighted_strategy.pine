@@ -33,7 +33,7 @@ shortProfitPerc = input.float(10, 'Short - take profits each x (%)', minval=0.0,
 shortProfitQty = input.float(10, 'Short - take x (%) from open position', minval=0.0, maxval=100, step=1, group='Take Profits')
 // * Delays
 delay = input.int(1, 'Candles delay', minval=1, group='Delays')
-delay_volume= input.int(1, 'Candles delay volume', minval=1, group='Delays')
+delay_srsi= input.int(1, 'Candles delay Stoch RSI', minval=1, group='Delays')
 delay_exit = input.int(5, 'Candles delay exit', minval=1, group='Delays')
 // * Inputs Weigthed strategies
 str_0 = input.bool(true, 'Strategy 0: Weighted Strategy', group='Weights')
@@ -225,7 +225,7 @@ signal = ma('SMA', MACD, 9)
 trend= MACD - signal
 
 long = MACD > signal
-short= MACD < signal
+short = MACD < signal
 proportion = math.abs(MACD / signal)
 
 // * Conditions
@@ -234,48 +234,45 @@ shortSignal1 = short and short[delay - 1] and not short[delay]
 closelong1 = short and not long[delay]
 closeshort1 = long and not short[delay]
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * STRATEGY 2: STOCH RSI OVERSOLD/OVERBOUGHT
+// * STRATEGY 2: STOCH RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
-rsi= ta.rsi(close, lengthRSI)
-srsi= ta.stoch(rsi, rsi, rsi, lengthStoch)
+rsi = ta.rsi(close, lengthRSI)
+srsi = ta.stoch(rsi, rsi, rsi, lengthStoch)
 k = ma('SMA', srsi, smoothK)
 isRsiOB = k >= longRSI
 isRsiOS = k <= shortRSI
-volumeRSI_condition = volume[2] > volume[3] and volume[2] > volume[4] and volume[2] > volume[5]
 
 // * Conditions
-condition_OB= strategy.position_size > 0 and volume[2] / volume[1] > (1.0 + longTrailPerc) and isRsiOB and volumeRSI_condition
-condition_OS= strategy.position_size < 0 and volume[2] / volume[1] > (1.0 + shortTrailPerc) and isRsiOS and volumeRSI_condition
-longSignal2 = isRsiOS[delay_volume] and not isRsiOB and since_entry >= delay_exit and since_close >= delay_exit
-shortSignal2= isRsiOB[delay_volume] and not isRsiOS and since_entry >= delay_exit and since_close >= delay_exit
+longSignal2 = isRsiOS[delay_srsi] and not isRsiOB and since_entry >= delay_exit and since_close >= delay_exit
+shortSignal2 = isRsiOB[delay_srsi] and not isRsiOS and since_entry >= delay_exit and since_close >= delay_exit
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * STRATEGY 3: RSI OVERSOLD/OVERBOUGHT
+// * STRATEGY 3: RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
-isRsiOB2= rsi >= longRSI2
-isRsiOS2= rsi <= shortRSI2
+isRsiOB2 = rsi >= longRSI2
+isRsiOS2 = rsi <= shortRSI2
 
 // * Conditions
-condition_OB2 = strategy.position_size > 0 and volume[2] / volume[1] > (1.0 + longTrailPerc) and isRsiOB2 and volumeRSI_condition
-condition_OS2 = strategy.position_size < 0 and volume[2] / volume[1] > (1.0 + shortTrailPerc) and isRsiOS2 and volumeRSI_condition
-longSignal3 = isRsiOS2[delay_volume] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
-shortSignal3= isRsiOB2[delay_volume] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
+longSignal3 = isRsiOS2[1] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
+shortSignal3 = isRsiOB2[1] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 4: SUPERTREND
 // *************************************************************************************************************************************************************************************************************************************************************************
-atr2= ma('SMA', ta.tr, Periods)
-atr= changeATR ? ta.atr(Periods) : atr2
+atr2 = ma('SMA', ta.tr, Periods)
+atr = changeATR ? ta.atr(Periods) : atr2
 up = source_4 - Multiplier * atr
-up1= nz(up[1], up)
-up:= close[1] > up1 ? math.max(up, up1) : up
+up1 = nz(up[1], up)
+up := close[1] > up1 ? math.max(up, up1) : up
 
 dn = source_4 + Multiplier * atr
-dn1= nz(dn[1], dn)
-dn:= close[1] < dn1 ? math.min(dn, dn1) : dn
+dn1 = nz(dn[1], dn)
+dn := close[1] < dn1 ? math.min(dn, dn1) : dn
 
 trend := 1
 trend := nz(trend[1], trend)
 trend := trend == -1 and close > dn1 ? 1 : trend == 1 and close < up1 ? -1 : trend
 // * Conditions
+long4 = trend == 1
+short4 = trend == -1
 longSignal4 = trend == 1 and trend[delay - 1] == 1 and trend[delay] == -1
 shortSignal4 = trend == -1 and trend[delay - 1] == -1 and trend[delay] == 1
 changeCond = trend != trend[1]
@@ -285,13 +282,32 @@ changeCond = trend != trend[1]
 MA12 = ma(MA12Type, MA12Source, MA12Period)
 MA22 = ma(MA22Type, MA22Source, MA22Period)
 
-long5= MA12 > MA22
+long5 = MA12 > MA22
 short5 = MA12 < MA22
+
 // * Conditions
 longSignal5 = long5 and long5[delay - 1] and not long5[delay]
 shortSignal5 = short5 and short5[delay - 1] and not short5[delay]
 closelong5 = short5 and not long5[delay]
 closeshort5 = long5 and not short5[delay]
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 6: POTENTIAL TOP/BOTTOM
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Combination RSI, Stoch RSI and MACD to detect potential TOP/BOTTOMS areas
+volumeRSI_condition = volume[2] > volume[3] and volume[2] > volume[4] and volume[2] > volume[5]
+condition_OB1 = isRsiOB2 and (isRsiOB or volume < ma('MA', volume, 20) / 2) and volumeRSI_condition
+condition_OS1 = isRsiOS2 and (isRsiOS or volume < ma('MA', volume, 20) / 2) and volumeRSI_condition
+
+condition_OB2 = volume[2] / volume[1] > (1.0 + longTrailPerc) and isRsiOB and volumeRSI_condition
+condition_OS2 = volume[2] / volume[1] > (1.0 + shortTrailPerc) and isRsiOS and volumeRSI_condition
+
+condition_OB3 = weight_total(MACD < signal, isRsiOB, isRsiOB2, short4, short5) >= weightTrigger
+condition_OS3 = weight_total(MACD > signal, isRsiOS, isRsiOS2, long4, long5) >= weightTrigger
+
+condition_OB = (condition_OB1 or condition_OB2)
+condition_OS = (condition_OS1 or condition_OS2)
+condition_OB_several = condition_OB[1] and condition_OB[2] or condition_OB[1] and condition_OB[3] or condition_OB[1] and condition_OB[4] or condition_OB[1] and condition_OB[5] or condition_OB[1] and condition_OB[6] or condition_OB[1] and condition_OB[7] 
+condition_OS_several = condition_OS[1] and condition_OS[2] or condition_OS[1] and condition_OS[3] or condition_OS[1] and condition_OS[4] or condition_OS[1] and condition_OS[5] or condition_OS[1] and condition_OS[6] or condition_OS[1] and condition_OS[7] 
 // *************************************************************************************************************************************************************************************************************************************************************************
 // STRATEGY ENTRIES AND EXITS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -471,16 +487,10 @@ plot(signal, 'Signal', color=color.new(color.orange, 0), display=display.none)
 plotshape(longSignal1 and showsignals ? up : na, 'Buy MACD', text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
 plotshape(shortSignal1 and showsignals ? dn : na, 'Sell MACD', text='MACD', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * strategy 2: Stoch RSI oversold/overbought
+// * strategy 2: Stoch RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
-makeShape_OB = if condition_OB
-    isRsiOB
-makeShape_OS = if condition_OS
-    isRsiOS
-plotshape(makeShape_OB ? dn : na, title='Overbought', text='OB', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(makeShape_OS ? up : na, title='Oversold', text='OS', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(longSignal2 and makeShape_OS ? up : na and showsignals ? up : na, title='Buy Stoch RSI', text='SRSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(shortSignal2 and makeShape_OB ? dn : na and showsignals ? dn : na, title='Sell Stoch RSI', text='SRSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(longSignal2 and showsignals ? up : na, title='Buy Stoch RSI', text='SRSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(shortSignal2 and showsignals ? dn : na, title='Sell Stoch RSI', text='SRSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 3: RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -496,6 +506,11 @@ plotshape(shortSignal4 and showsignals ? dn : na, title='Sell Supertrend', text=
 // *************************************************************************************************************************************************************************************************************************************************************************
 plotshape(longSignal5 and showsignals ? up : na, title='Buy MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.green, 0), textcolor=color.new(color.white, 0), display=display.none)
 plotshape(shortSignal5 and showsignals ? dn : na, title='Sell MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.red, 0), textcolor=color.new(color.white, 0), display=display.none)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 6: POTENTIAL TOP/BOTTOM
+// *************************************************************************************************************************************************************************************************************************************************************************
+plotshape(condition_OB_several ? dn : na, title='Top', text='T', location=location.abovebar, style=shape.labeldown, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0))
+plotshape(condition_OS_several ? up : na, title='Bottom', text='B', location=location.belowbar, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0))
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Buy/Sell labels
 // *************************************************************************************************************************************************************************************************************************************************************************
