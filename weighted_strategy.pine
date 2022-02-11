@@ -1,5 +1,7 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © accry
 //@version=5
-strategy(title='Weighted Strategy 2 - v3', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=1)
+strategy(title='Acrypto - Weighted Strategy', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=1000, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -34,6 +36,7 @@ shortProfitQty = input.float(10, 'Short - take x (%) from open position', minval
 // * Delays
 delay = input.int(1, 'Candles delay', minval=1, group='Delays')
 delay_srsi= input.int(1, 'Candles delay Stoch RSI', minval=1, group='Delays')
+delay_rsi= input.int(1, 'Candles delay RSI', minval=1, group='Delays')
 delay_exit = input.int(5, 'Candles delay exit', minval=1, group='Delays')
 // * Inputs Weigthed strategies
 str_0 = input.bool(true, 'Strategy 0: Weighted Strategy', group='Weights')
@@ -252,8 +255,8 @@ isRsiOB2 = rsi >= longRSI2
 isRsiOS2 = rsi <= shortRSI2
 
 // * Conditions
-longSignal3 = isRsiOS2[1] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
-shortSignal3 = isRsiOB2[1] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
+longSignal3 = isRsiOS2[delay_rsi] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
+shortSignal3 = isRsiOB2[delay_rsi] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 4: SUPERTREND
 // *************************************************************************************************************************************************************************************************************************************************************************
