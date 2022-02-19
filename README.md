@@ -54,7 +54,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
 
 ## Examples
 
-* H4 BTC/USDT Binance (default)
+* H4 BTC/USDT Binance (default) - 01/01/2021 - 19/02/2022
 <p align="left">
     <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H.svg" width="1400">
 </p>
