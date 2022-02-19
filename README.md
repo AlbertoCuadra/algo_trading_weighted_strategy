@@ -2,11 +2,11 @@
 
 I have been developing a fully customizable algo over the last year. The algorithm is based on a set of different strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
 
-* MACD
-* Stochastic RSI
-* RSI
-* Supertrend
-* MA crossover
+* `MACD`
+* `Stochastic RSI`
+* `RSI`
+* `Supertrend`
+* `MA crossover`
 
 Moreover, the algo includes STOP losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
 
@@ -15,7 +15,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
 # Features:
 
 * The algorithm allows to trade with long, short or both positions.
-* Backtest the algorithm over a defined interval (data stamp), e.g., from 01/01/2021
+* `Backtest the algorithm` over a defined interval (data stamp), e.g., from 01/01/2021
 * Set stoploss (SL) orders based on a percentage of the previous candle source, e.g., close or hl2 (high + low)/2. Only close the position after the candle is close!
 * Stop position in case the algo detects a potential Top/Bottom.
   + It can close a specific percentage of the remaining open long position.
@@ -48,12 +48,13 @@ The algorithm is based on a combination of well-documented indicators. First, th
 # Plots
 
 * The color-trend represents when at least one of the strategies is satisfied, long in teal and short in gray and there is not a draw, same number of strategies satisfies for long and short.
-* The + represent the next Take Profit (TP) target in teal and the Stop-Loss (SL) in gray.
+* The `+` represent the next Take Profit (TP) target in teal and the Stop-Loss (SL) in gray.
 * Plot labels for every time each strategy satisfies to open a long/short position
 * Detect potential TOP and BOTTOMS based on a combination of RSI, Stoch RSI, MACD, volume, and the weighted-strategy.
 
 # Examples
 
+* H4 BTC/USDT Binance (default)
 <p align="left">
     <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H.svg" width="1400">
 </p>
@@ -62,10 +63,11 @@ The algorithm is based on a combination of well-documented indicators. First, th
 </p>
 
 # How to use it
-Searach for "Acrypto - Weighted strategy" in the indicator tab using tradingview. 
+Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview`. 
 
-Original post: https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
+`Original post:` https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
 
+`Referral link:` https://www.tradingview.com/gopro/?share_your_love=accry
 
 
 
