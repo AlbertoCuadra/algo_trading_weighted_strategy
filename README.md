@@ -1,4 +1,4 @@
-# Acrypto - Weighted strategy 
+# Weighted strategy
 
 I have been developing a fully customizable algo over the last year. The algorithm is based on a set of different strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
 
@@ -8,9 +8,7 @@ I have been developing a fully customizable algo over the last year. The algorit
 * Supertrend
 * MA crossover
 
-Moreover, the algo includes STOP losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 1H and 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
-
-
+Moreover, the algo includes STOP losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
 
 The algorithm is based on a combination of well-documented indicators. First, the algorithm calculated the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are fulfilled (in case the weight of each strategy is the same). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
@@ -48,6 +46,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
 ---
 
 # Plots
+
 * The color-trend represents when at least one of the strategies is satisfied, long in teal and short in gray and there is not a draw, same number of strategies satisfies for long and short.
 * The + represent the next Take Profit (TP) target in teal and the Stop-Loss (SL) in gray.
 * Plot labels for every time each strategy satisfies to open a long/short position
@@ -56,14 +55,22 @@ The algorithm is based on a combination of well-documented indicators. First, th
 # Examples
 
 <p align="left">
-    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H.svg" width="1200">
+    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H.svg" width="1400">
 </p>
 <p align="left">
-    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H_results.svg" width="1200">
+    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H_results.svg" width="1400">
 </p>
+
+# How to use it
+Searach for "Acrypto - Weighted strategy" in the indicator tab using tradingview. 
+
+Original post: https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
+
+
 
 
 Enjoy!
 
 Best,
+
 Alberto
