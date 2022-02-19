@@ -1,3 +1,5 @@
+# Acrypto - Weighted strategy 
+
 I have been developing a fully customizable algo over the last year. The algorithm is based on a set of different strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
 
 * MACD
@@ -13,3 +15,5 @@ Backtest the algorithm with different data stamps to avoid overfitting results
 
 Best,
 Alberto
+
+# Examples
