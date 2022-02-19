@@ -17,13 +17,13 @@ The algorithm is based on a combination of well-documented indicators. First, th
 * The algorithm allows to trade with long, short or both positions.
 * `Backtest the algorithm` over a defined interval (data stamp), e.g., from 01/01/2021
 * Set stoploss (SL) orders based on a percentage of the previous candle source, e.g., close or hl2 (high + low)/2. Only close the position after the candle is close!
-* Stop position in case the algo detects a potential Top/Bottom.
+* Stop position in case the algo `detects a potential Top/Bottom`.
   + It can close a specific percentage of the remaining open long position.
   + It can close a specific percentage of the remaining open short position.
-* It can moves the stoploss every time the algo takes profit (TP)
-* Take profit based on a percentage of the open position. It is possible to define different values for short positions. Define the percentage of TP to close from the open position.
+* It can `moves the stoploss` every time the algo takes profit (TP)
+* `Take profit` based on a percentage of the open position. It is possible to define different values for short positions. Define the percentage of TP to close from the open position.
 * Choose the maximum number of Take Profits (TP)
-* Define delays to evaluate the strategies of more previous candles:
+* `Define delays` to evaluate the strategies of more previous candles:
   + Candle Delay is for MACD strategy
   + Candle Delay Stoch RSI is for the Stochastic RSI strategy.
   + Candle Delay RSI is for the RSI strategy.
@@ -35,7 +35,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
 * Customize the well-documented RSI strategy.
 * Customize the well-documented Supertrend strategy.
 * Customize the well documented MA cross strategy.
-* Buy/sell labels for possible reentries.
+* `Buy/sell labels for possible reentries`.
 * Monthly table performance.
 
 ---
