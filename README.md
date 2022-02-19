@@ -1,4 +1,4 @@
-# Weighted strategy
+## Weighted strategy
 
 I have been developing a fully customizable algo on pinescript over the last year. The algorithm is based on a set of different strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
 
@@ -12,7 +12,7 @@ Moreover, the algo includes STOP losses criteria and a taking profit strategy. T
 
 The algorithm is based on a combination of well-documented indicators. First, the algorithm calculated the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are fulfilled (in case the weight of each strategy is the same). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
-# Features:
+## Features:
 
 * The algorithm allows to trade with long, short or both positions.
 * `Backtest the algorithm` over a defined interval (data stamp), e.g., from 01/01/2021
@@ -45,14 +45,14 @@ The algorithm is based on a combination of well-documented indicators. First, th
   With the monthly performance, we can see that the algo has performed very well over the past two years, capturing the trend very accurately. However, from 2017 to 2019, the    algorithm can't even make a profit! This is a disclaimer, use at your own risk.
 ---
 
-# Plots
+## Plots
 
 * The color-trend represents when at least one of the strategies is satisfied, long in teal and short in gray and there is not a draw, same number of strategies satisfies for long and short.
 * The `+` represent the next Take Profit (TP) target in teal and the Stop-Loss (SL) in gray.
 * Plot labels for every time each strategy satisfies to open a long/short position
 * Detect potential TOP and BOTTOMS based on a combination of RSI, Stoch RSI, MACD, volume, and the weighted-strategy.
 
-# Examples
+## Examples
 
 * H4 BTC/USDT Binance (default)
 <p align="left">
@@ -62,7 +62,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
     <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H_results.svg" width="1400">
 </p>
 
-# How to use it
+## How to use it
 Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview`. 
 
 If you consider paying for a subscription on TradingView (which is not required for this script), I would be very grateful if you could use my referral link :)
@@ -70,6 +70,7 @@ If you consider paying for a subscription on TradingView (which is not required 
 `Referral link:` https://www.tradingview.com/gopro/?share_your_love=accry
 
 `Original post:` https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
+
 
 ## Acknowledgements
 The monthly table performance was developed by @QuantNomad. I have only changed some colors and also adapted the calculations to the last previous candle. The purpose of this change is to make this script compatible with this weighted strategy. Thanks again to @QuantNomad for this amazing script!
