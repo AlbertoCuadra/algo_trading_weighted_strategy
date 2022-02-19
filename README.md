@@ -1,6 +1,6 @@
 ## Weighted strategy
 
-I have been developing a fully customizable algo on pinescript over the last year in my spare time. The algorithm is based on a set of different strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
+I have been developing a fully customizable algo on pinescript over the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently it has implemented a set of 5 strategies:
 
 * `MACD`
 * `Stochastic RSI`
@@ -8,9 +8,9 @@ I have been developing a fully customizable algo on pinescript over the last yea
 * `Supertrend`
 * `MA crossover`
 
-Moreover, the algo includes STOP losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
+Moreover, the algo includes stop losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
 
-The algorithm is based on a combination of well-documented indicators. First, the algorithm calculated the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are fulfilled (in case the weight of each strategy is the same). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
+To set an order, first, the algorithm calculates the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are satisfied (in case the weight of each strategy is the same, e.g., same relevance over the rest). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
 ## Features:
 
