@@ -55,6 +55,12 @@ The algorithm is based on a combination of well-documented indicators. First, th
 
 # Examples
 
+<p align="left">
+    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H.svg" width="1200">
+</p>
+<p align="left">
+    <img src="https://github.com/AlbertoCuadra/algo_trading/blob/main/Examples/example_BTC_USDT_Binance_4H_results.svg" width="1200">
+</p>
 
 
 Enjoy!
