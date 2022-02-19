@@ -36,15 +36,9 @@ shortProfitPerc = input.float(13, 'Short - take profits each x (%)', minval=0.0,
 shortProfitQty = input.float(10, 'Short - take x (%) from open position', minval=0.0, maxval=100, step=1, group='Take Profits')
 // * Delays
 delay = input.int(1, 'Candles delay', minval=1, group='Delays')
-<<<<<<< HEAD
 delay_srsi= input.int(2, 'Candles delay Stoch RSI', minval=1, group='Delays')
 delay_rsi= input.int(2, 'Candles delay RSI', minval=1, group='Delays')
 delay_exit = input.int(7, 'Candles delay exit', minval=1, group='Delays')
-=======
-delay_srsi= input.int(1, 'Candles delay Stoch RSI', minval=1, group='Delays')
-delay_rsi= input.int(1, 'Candles delay RSI', minval=1, group='Delays')
-delay_exit = input.int(5, 'Candles delay exit', minval=1, group='Delays')
->>>>>>> 70fb41517cafa82b0fb0c0c3b2442a397ed229a3
 // * Inputs Weigthed strategies
 str_0 = input.bool(true, 'Strategy 0: Weighted Strategy', group='Weights')
 weightTrigger = input.int(2, 'Weight Signal entry [0, 5]', minval=0, maxval=5, step=1, group='Weights')
@@ -562,7 +556,6 @@ plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSign
 plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short >= weightTrigger)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 //COLORS
 // color_bar = strategy.position_size > 0 ? #00c3ff : strategy.position_size < 0 ? #ff0062 : color.gray
-<<<<<<< HEAD
 
 
 
@@ -652,6 +645,3 @@ if showPerformance
             m_color = array.get(month_pnl, mi) > 0 ? color.new(color.teal, transp = 40) : color.new(color.gray, transp = 40)
             
             table.cell(monthly_table, m_col, m_row, str.tostring(math.round(array.get(month_pnl, mi) * 100, prec)), bgcolor = m_color, text_color=color.new(color.white, 0))
-            
-=======
->>>>>>> 70fb41517cafa82b0fb0c0c3b2442a397ed229a3
