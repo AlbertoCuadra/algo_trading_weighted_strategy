@@ -65,10 +65,11 @@ The algorithm is based on a combination of well-documented indicators. First, th
 # How to use it
 Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview`. 
 
-`Original post:` https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
+If you consider paying for a subscription on TradingView (which is not required for this script), I would be very grateful if you could use my referral link :)
 
 `Referral link:` https://www.tradingview.com/gopro/?share_your_love=accry
 
+`Original post:` https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
 
 ## Acknowledgements
 The monthly table performance was developed by @QuantNomad. I have only changed some colors and also adapted the calculations to the last previous candle. The purpose of this change is to make this script compatible with this weighted strategy. Thanks again to @QuantNomad for this amazing script!
