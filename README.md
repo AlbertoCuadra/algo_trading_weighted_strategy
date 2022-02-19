@@ -63,7 +63,7 @@ To set an order, first, the algorithm calculates the weight_strategy, which repr
 </p>
 
 ## How to use it
-Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview` and add it to your layout. 
+Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview` and add it to your layout. Modify the indicator parameters for the desired asset and data frame.
 
 If you consider paying for a subscription on TradingView (which is not required for this script), I would be very grateful if you could use my referral link :)
 
