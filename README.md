@@ -71,7 +71,6 @@ If you consider paying for a subscription on TradingView (which is not required 
 
 `Original post:` https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/
 
-
 ## Acknowledgements
 The monthly table performance was developed by @QuantNomad. I have only changed some colors and also adapted the calculations to the last previous candle. The purpose of this change is to make this script compatible with this weighted strategy. Thanks again to @QuantNomad for this amazing script!
 
