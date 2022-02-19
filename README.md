@@ -70,9 +70,9 @@ Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview
 `Referral link:` https://www.tradingview.com/gopro/?share_your_love=accry
 
 
+## Acknowledgements
+The monthly table performance was developed by @QuantNomad. I have only changed some colors and also adapted the calculations to the last previous candle. The purpose of this change is to make this script compatible with this weighted strategy. Thanks again to @QuantNomad for this amazing script!
 
-Enjoy!
+## Developer
 
-Best,
-
-Alberto
+* **[Alberto Cuadra-Lara](https://acuadralara.com/)** 
