@@ -36,7 +36,7 @@ The algorithm is based on a combination of well-documented indicators. First, th
 * Customize the well-documented Supertrend strategy.
 * Customize the well documented MA cross strategy.
 * Buy/sell labels for possible reentries.
-* Monthly table performance. All the credits to @QuantNomad. I have only changed some colors and also adapted the calculations to the last previous candle. The purpose of this change is to make this script compatible with this weighted strategy. Thanks again to @QuantNomad for this amazing script!
+* Monthly table performance.
 
 ---
 ⚠️ **NOTE**
