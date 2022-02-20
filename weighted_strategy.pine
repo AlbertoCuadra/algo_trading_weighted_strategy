@@ -545,9 +545,9 @@ upPlot = plot((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longS
 dnPlot = plot((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='Down Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.gray, 0), display=display.none)
 longFillColor = color.aqua
 shortFillColor = color.gray
-plotchar(int(weightTrigger * n_strategies()), "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
-plotchar(int(w_total_long * n_strategies()), "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
-plotchar(int(w_total_short * n_strategies()), "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
+plotchar(int(weightTrigger), "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(int(w_total_long), "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
+plotchar(int(w_total_short), "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
 plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
 plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
 fill(mPlot, upPlot, title='UpTrend Highligter', color=longFillColor, transp=80)
