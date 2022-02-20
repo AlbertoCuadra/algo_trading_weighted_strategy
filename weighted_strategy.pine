@@ -22,7 +22,8 @@ ToMonth= input.int(1, 'To Month', minval=1, maxval=12, group='DataStamp')
 ToYear = input.int(9999, 'To Year', minval=2017, maxval=9999, group='DataStamp')
 // * Stop loss
 stoploss = input.bool(true, 'Stop loss', group='Stop loss')
-movestoploss= input.bool(false, 'Move stop loss', group='Stop loss')
+movestoploss= input.string('TP-2', 'Move stop loss', options=['None', 'Percentage', 'TP-1', 'TP-2', 'TP-3'], group='Stop loss')
+movestoploss_entry = input.bool(false, 'Move stop loss to entry', group='Stop loss')
 stoplossPerc= input.float(6.0, 'Stop Loss %', minval=0, maxval=100, group='Stop loss') * 0.01
 movestoplossFactor = input.float(20.0, 'Move stop loss factor %', group='Stop loss') * 0.01 + 1
 stopSource = input.source(hl2, 'Stop Source', group='Stop loss')
@@ -190,15 +191,17 @@ weight_total(signal1, signal2, signal3, signal4, signal5) =>
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Color
 // *************************************************************************************************************************************************************************************************************************************************************************
-colors(type) =>
+colors(type, value=0) =>
     switch str.lower(type)
-        'buy'=> color.aqua
-        'sell' => color.gray
-        'signal' => color.orange
-        'profit' => color.green
-        'loss' => color.red
-        'info' => color.white
-        'highlights' => color.orange
+        'buy'=> color.new(color.aqua, value)
+        'sell' => color.new(color.gray, value)
+        'TP' => color.new(color.aqua, value)
+        'SL' => color.new(color.gray, value)
+        'signal' => color.new(color.orange, value)
+        'profit' => color.new(color.teal, value)
+        'loss' => color.new(color.red, value)
+        'info' => color.new(color.white, value)
+        'highlights' => color.new(color.orange, value)
 
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Bar since last entry
@@ -383,33 +386,69 @@ if time >= start and time <= end
             if high > price_takeProfit(ProfitPerc, 6) and maxTP >= 6
                 n = 6
                 nextTP := na
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-3)
             else if high > price_takeProfit(ProfitPerc, 5) and maxTP >= 5
                 n = 5
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-3)
             else if high > price_takeProfit(ProfitPerc, 4) and maxTP >= 4
                 n = 4
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-3)
             else if high > price_takeProfit(ProfitPerc, 3) and maxTP >= 3
                 n = 3
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
             else if high > price_takeProfit(ProfitPerc, 2) and maxTP >= 2
                 n = 2
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_long := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
             else if high > price_takeProfit(ProfitPerc, 1) and maxTP >= 1
                 n = 1
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_long := strategy.position_avg_price * (1 + n*ProfitPerc - stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
+                else if movestoploss == 'TP-2' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_long := strategy.position_avg_price
         if since_entry == 0
             n = 0
             nextTP := price_takeProfit(ProfitPerc, n + 1)
@@ -419,33 +458,69 @@ if time >= start and time <= end
             if low < price_takeProfit(ProfitPerc, 6) and maxTP >= 6
                 n = 6
                 nextTP := na
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-3)
             else if low < price_takeProfit(ProfitPerc, 5) and maxTP >= 5
                 n = 5
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-3)
             else if low < price_takeProfit(ProfitPerc, 4) and maxTP >= 4
                 n = 4
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-3)
             else if low < price_takeProfit(ProfitPerc, 3) and maxTP >= 3
                 n = 3
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-2)
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
             else if low < price_takeProfit(ProfitPerc, 2) and maxTP >= 2
                 n = 2
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1'
+                    price_stop_short := price_takeProfit(ProfitPerc, n-1)
+                else if movestoploss == 'TP-2' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
             else if low < price_takeProfit(ProfitPerc, 1) and maxTP >= 1
                 n = 1 
                 nextTP := price_takeProfit(ProfitPerc, n + 1)
-                if movestoploss
+                if movestoploss == 'Percentage'
                     price_stop_short := strategy.position_avg_price * (1 - n*ProfitPerc + stoplossPerc * movestoplossFactor)
+                else if movestoploss == 'TP-1' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
+                else if movestoploss == 'TP-2' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
+                else if movestoploss == 'TP-3' and movestoploss_entry
+                    price_stop_short := strategy.position_avg_price
         if since_entry == 0
             n = 0
             nextTP := price_takeProfit(ProfitPerc, n + 1)
@@ -470,7 +545,7 @@ if time >= start and time <= end
 // *************************************************************************************************************************************************************************************************************************************************************************
 // PLOTS
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * Data window
+// * Data window - debugging
 // *************************************************************************************************************************************************************************************************************************************************************************
 price_stop = strategy.position_size > 0 ? price_stop_long : price_stop_short
 
@@ -543,15 +618,13 @@ plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, col
 mPlot = plot(ohlc4, title='Price ohlc4', style=plot.style_circles, linewidth=0, display=display.none)
 upPlot = plot((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='Up Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.aqua, 0), display=display.none)
 dnPlot = plot((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='Down Trend', style=plot.style_linebr, linewidth=2, color=color.new(color.gray, 0), display=display.none)
-longFillColor = color.aqua
-shortFillColor = color.gray
-plotchar(int(weightTrigger), "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
-plotchar(int(w_total_long), "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
-plotchar(int(w_total_short), "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
+plotchar(weightTrigger, "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
+plotchar(w_total_long, "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
+plotchar(w_total_short, "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weightTrigger ? color.orange : color.gray)
 plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
 plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
-fill(mPlot, upPlot, title='UpTrend Highligter', color=longFillColor, transp=80)
-fill(mPlot, dnPlot, title='DownTrend Highligter', color=shortFillColor, transp=80)
+fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', 80))
+fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
 plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long >= weightTrigger)) and showsignals ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
 plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short >= weightTrigger)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 //COLORS
