@@ -43,7 +43,7 @@ To set an order, first, the algorithm calculates the weight_strategy, which repr
 ---
 ⚠️ **NOTE**
 - Backtest the algorithm with different data stamps to avoid overfitting results.
-- The given default setup correspond with a successful example to use with H4 $BTC/$USDT on @binance with +1400% in one year with a max drawdown of 9% approx.
+- The given default setup correspond with a successful example to use with H4 $BTC/$USDT on @binance with +1700% in one year with a max drawdown of 8% approx.
   With the monthly performance, we can see that the algo has performed very well over the past two years, capturing the trend very accurately. However, from 2017 to 2019, the    algorithm can't even make a profit! This is a disclaimer, use at your own risk.
 ---
 
