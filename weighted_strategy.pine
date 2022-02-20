@@ -625,8 +625,6 @@ plotshape((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSigna
 plotshape((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
 fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', 80))
 fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
-plotshape(((longSignal1 or longSignal2 or longSignal3 or longSignal4 or longSignal5) and (w_total_long >= weightTrigger)) and showsignals ? up : na, title='Buy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(((shortSignal1 or shortSignal2 or shortSignal3 or shortSignal4 or shortSignal5) and (w_total_short >= weightTrigger)) and showsignals ? dn : na, title='Sell', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 //COLORS
 // color_bar = strategy.position_size > 0 ? #00c3ff : strategy.position_size < 0 ? #ff0062 : color.gray
 
