@@ -168,14 +168,6 @@ price_takeProfit(percentage, N) =>
     else
         strategy.position_avg_price * (1 - N * percentage)
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * Percentage take profit
-// *************************************************************************************************************************************************************************************************************************************************************************
-perc_takeProfit(percentage) =>
-    if strategy.position_size > 0
-        percentage
-    else
-        percentage
-// *************************************************************************************************************************************************************************************************************************************************************************
 // * Weigthed values
 // *************************************************************************************************************************************************************************************************************************************************************************
 weight_values(signal) =>
@@ -341,12 +333,10 @@ if time >= start and time <= end
         if allowShorts == true
             w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
             if w_total >= weightTrigger
-                //strategy.close_all()
                 strategy.entry('Short', strategy.short)
         if allowLongs == true
             w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
             if w_total >= weightTrigger
-                //strategy.close_all()
                 strategy.entry('Long', strategy.long)
     else
         if allowShorts == true
@@ -374,10 +364,10 @@ if time >= start and time <= end
     // ***************************************************************************************************************************************************************************
     // * Set Take Profits
     // ***************************************************************************************************************************************************************************
-    if (strategy.position_size > 0 or strategy.position_size < 0) and takeProfits
+    if strategy.position_size != 0 and takeProfits and since_entry == 0
         for i = 1 to maxTP
             id = 'TP ' + str.tostring(i)
-            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=perc_takeProfit(ProfitQty), comment='TP')
+            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP')
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
@@ -535,13 +525,11 @@ if time >= start and time <= end
     if allowShorts == true and strategy.position_size < 0 and stoploss
         strategy.close('Short', when=stopSource >= price_stop_short, qty_percent=100, comment='STOP')
         if str_6
-            strategy.close('Short', when=condition_OS_several, qty_percent=bottomQty, comment='STOP')
-        // strategy.exit(id='STOP', from_entry='Short', stop=price_stop_short, comment='STOP')
+            strategy.close('Short', when=condition_OS_several, qty_percent=bottomQty, comment='TP')
     if allowLongs == true and strategy.position_size > 0 and stoploss
         strategy.close('Long', when=stopSource <= price_stop_long, qty_percent=100, comment='STOP')
         if str_6
-            strategy.close('Long', when=condition_OB_several, qty_percent=topQty, comment='STOP')
-        // strategy.exit(id='STOP', stop=price_stop_long, comment='STOP')
+            strategy.close('Long', when=condition_OB_several, qty_percent=topQty, comment='TP')
 // *************************************************************************************************************************************************************************************************************************************************************************
 // PLOTS
 // *************************************************************************************************************************************************************************************************************************************************************************
