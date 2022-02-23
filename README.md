@@ -83,4 +83,4 @@ The monthly table performance was developed by @QuantNomad. I have only changed 
 
 Support this project by giving me an extra dose of caffeine :coffee: 
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/acuadra)
+<a href="https://www.buymeacoffee.com/acuadra" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
