@@ -80,4 +80,7 @@ The monthly table performance was developed by @QuantNomad. I have only changed 
 
 * **[Alberto Cuadra-Lara](https://acuadralara.com/)** 
 
+
+Support this project by giving me an extra dose of caffeine :coffee: 
+
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/acuadra)
