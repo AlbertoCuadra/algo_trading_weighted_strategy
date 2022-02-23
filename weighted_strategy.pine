@@ -29,7 +29,7 @@ movestoplossFactor = input.float(20.0, 'Move stop loss factor %', group='Stop lo
 stopSource = input.source(hl2, 'Stop Source', group='Stop loss')
 // * Take profits
 takeProfits= input.bool(true, 'Take profits', group='Take Profits')
-retrade= input.bool(false, 'Retrade', group='Take Profits')
+// retrade= input.bool(false, 'Retrade', group='Take Profits')
 maxTP = input.int(6, 'Max number of TP', minval=1, maxval=6, group='Take Profits')
 longProfitPerc = input.float(6.8, 'Long - take profits each x (%)', minval=0.0, maxval=999, step=1, group='Take Profits') * 0.01
 longProfitQty = input.float(15, 'Long - take x (%) from open position', minval=0.0, maxval=100, step=1, group='Take Profits')
@@ -633,8 +633,8 @@ fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
 // *************************************************************************************************************************************************************************************************************************************************************************
 // MONTHLY TABLE PERFORMANCE - Developed by @QuantNomad
 // *************************************************************************************************************************************************************************************************************************************************************************
-showPerformance = input.bool(true, 'Show Performance ?', group='Performance - credits: @QuantNomad')
-prec = input(2, 'Return Precision', group='Performance')
+showPerformance = input.bool(true, 'Show Monthly Performance ?', group='Performance - credits: @QuantNomad')
+prec = input(2, 'Return Precision', group='Performance - credits: @QuantNomad')
 
 if showPerformance
     new_month = month(time) != month(time[1])
