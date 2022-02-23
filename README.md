@@ -79,3 +79,5 @@ The monthly table performance was developed by @QuantNomad. I have only changed 
 ## Developer
 
 * **[Alberto Cuadra-Lara](https://acuadralara.com/)** 
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/acuadra)
