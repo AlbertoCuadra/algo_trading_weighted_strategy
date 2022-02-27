@@ -1,7 +1,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © accry
 //@version=5
-strategy(title='Acrypto - Weighted Strategy', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Pepe - Acrypto', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -48,6 +48,9 @@ weightStr2 = input.int(1, 'Weight Strategy 2 [0, 5]', minval=0, maxval=5, step=1
 weightStr3 = input.int(1, 'Weight Strategy 3 [0, 5]', minval=0, maxval=5, step=1, group='Weights')
 weightStr4 = input.int(1, 'Weight Strategy 4 [0, 5]', minval=0, maxval=5, step=1, group='Weights')
 weightStr5 = input.int(1, 'Weight Strategy 5 [0, 5]', minval=0, maxval=5, step=1, group='Weights')
+weightStr7 = input.int(1, 'Weight Strategy 7 [0, 5]', minval=0, maxval=5, step=1, group='Weights')
+
+
 // * Inputs strategy 1: MACD 
 str_1 = input.bool(true, 'Strategy 1: MACD', group='Strategy 1: MACD')
 MA1Period = input.int(16, 'MA 1', minval=1, maxval=9999, step=1, group='Strategy 1: MACD')
@@ -56,6 +59,7 @@ MA1Source = input.source(hl2, 'MA1 Source', group='Strategy 1: MACD')
 MA2Period = input.int(36, 'MA 2', minval=1, maxval=9999, step=1, group='Strategy 1: MACD')
 MA2Type= input.string('EMA', 'MA2 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 1: MACD')
 MA2Source = input.source(high, 'MA2 Source', group='Strategy 1: MACD')
+
 // * Inputs strategy 2: Stoch RSI oversold/overbought
 str_2 = input.bool(true, 'Strategy 2: Stoch RSI', group='Strategy 2: Stoch RSI')
 longRSI= input.float(70, 'Exit SRSI Long (%)', minval=0.0, step=1, group='Strategy 2: Stoch RSI')
@@ -63,16 +67,19 @@ shortRSI = input.float(27, 'Exit SRSI Short (%)', minval=0.0, step=1, group='Str
 lengthRSI = input.int(14, 'RSI Length', group='Strategy 2: Stoch RSI')
 lengthStoch= input.int(14, 'RSI Stochastic', group='Strategy 2: Stoch RSI')
 smoothK= input.int(3, 'Smooth k', group='Strategy 2: Stoch RSI')
+
 // * Inputs strategy 3: RSI oversold/overbought
 str_3 = input.bool(true, 'Strategy 3: RSI', group='Strategy 3: RSI')
 longRSI2 = input.float(77, 'Exit RSI Long (%)', minval=0.0, step=1, group='Strategy 3: RSI')
 shortRSI2 = input.float(30, 'Exit RSI Short (%)', minval=0.0, step=1, group='Strategy 3: RSI')
+
 // * Inputs strategy 4: Supertrend
 str_4 = input.bool(true, 'Strategy 4: Supertrend', group='Strategy 4: Supertrend')
 Periods= input.int(2, 'ATR Period', group='Strategy 4: Supertrend')
 source_4 = input.source(hl2, 'Source', group='Strategy 4: Supertrend')
 Multiplier = input.float(2.4, 'ATR Multiplier', step=0.1, group='Strategy 4: Supertrend')
 changeATR = input.bool(true, 'Change ATR Calculation Method ?', group='Strategy 4: Supertrend')
+
 // * Inputs strategy 5: MA CROSS
 str_5 = input.bool(true, 'Strategy 5: MA CROSS', group='Strategy 5: MA CROSS')
 MA12Period = input.int(50, 'MA 1', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
@@ -81,12 +88,21 @@ MA12Source = input.source(close, 'MA1 Source', group='Strategy 5: MA CROSS')
 MA22Period = input.int(88, 'MA 2', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
 MA22Type = input.string('EMA', 'MA2 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 5: MA CROSS')
 MA22Source = input.source(close, 'MA2 Source', group='Strategy 5: MA CROSS')
+
+// * Inputs strategy 7: VWAP Cross
+str_7 = input.bool(true, 'Strategy 7: VWAP CROSS', group='Strategy 7: VWAP CROSS')
+vwapHigh = input.int(5, title="VWAP Long Cross", group='Strategy 7: VWAP CROSS') 
+vwapLow  = input.int(-5, title="VWAP Short Cross", group='Strategy 7: VWAP CROSS')
+
 // * Inputs Potential TOP/BOTTOM
 str_6 = input.bool(false, 'Close order at potential Top/Bottom', group='Potential TOP/BOTTOM')
 topQty = input.float(30, 'Top - take x (%) from the remaining position', minval=0.0, maxval=100, step=1, group='Potential TOP/BOTTOM')
 bottomQty = input.float(30, 'Bottom - take x (%) from the remaining position', minval=0.0, maxval=100, step=1, group='Potential TOP/BOTTOM')
 longTrailPerc = input.float(150, 'Trail volume Long (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
 shortTrailPerc = input.float(150, 'Trail volume Short (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
+
+
+
 // * Miscellaneous
 showsignals= input.bool(true, 'Show Buy/Sell Signals ?', group='Miscellaneous')
 
@@ -159,6 +175,8 @@ n_strategies() =>
         result += 1.
     if str_5
         result += 1.
+    if str_7
+        result += 1.
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Price take profit
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -178,8 +196,8 @@ weight_values(signal) =>
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Weigthed total
 // *************************************************************************************************************************************************************************************************************************************************************************
-weight_total(signal1, signal2, signal3, signal4, signal5) =>
-    weightStr1 * weight_values(signal1) + weightStr2 * weight_values(signal2) + weightStr3 * weight_values(signal3) + weightStr4 * weight_values(signal4) + weightStr5 * weight_values(signal5)
+weight_total(signal1, signal2, signal3, signal4, signal5, signal7) =>
+    weightStr1 * weight_values(signal1) + weightStr2 * weight_values(signal2) + weightStr3 * weight_values(signal3) + weightStr4 * weight_values(signal4) + weightStr5 * weight_values(signal5) + weightStr7 * weight_values(signal7)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Color
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -215,6 +233,50 @@ if strategy.opentrades == 0
     since_entry := delay_exit
 if strategy.closedtrades == 0
     since_close := delay_exit
+    
+    
+
+// *************************************************************************************************************************************************************************************************************************************************************************
+// MARKET CIPHER SHIT DONT TOUCH KTHX
+// *************************************************************************************************************************************************************************************************************************************************************************
+// WaveTrend
+wtChannelLen = 9
+wtAverageLen = 12
+wtMASource = hlc3
+wtMALen = 3
+
+
+// WaveTrend Overbought & Oversold lines
+obLevel = 53
+obLevel2 = 60
+obLevel3 = 100
+osLevel = -53
+osLevel2 = -60
+osLevel3 = -75
+
+// WaveTrend
+f_wavetrend(src, chlen, avg, malen, tf) =>
+    tfsrc = request.security(syminfo.tickerid, tf, src)
+    esa = ta.ema(tfsrc, chlen)
+    de = ta.ema(math.abs(tfsrc - esa), chlen)
+    ci = (tfsrc - esa) / (0.015 * de)
+    wt1 = request.security(syminfo.tickerid, tf, ta.ema(ci, avg))
+    wt2 = request.security(syminfo.tickerid, tf, ta.sma(wt1, malen))
+    vwapData = wt1 - wt2
+    wtOversold = wt2 <= osLevel
+    wtOverbought = wt2 >= obLevel
+    wtCross = ta.cross(wt1, wt2)
+    wtCrossUp = wt2 - wt1 <= 0
+    wtCrossDown = wt2 - wt1 >= 0
+    wtCrosslast = ta.cross(wt1[2], wt2[2])
+    wtCrossUplast = wt2[2] - wt1[2] <= 0
+    wtCrossDownlast = wt2[2] - wt1[2] >= 0
+    [wt1, wt2, wtOversold, wtOverbought, wtCross, wtCrossUp, wtCrossDown, wtCrosslast, wtCrossUplast, wtCrossDownlast, vwapData]
+
+
+// Calculates WaveTrend
+[wt1, wt2, wtOversold, wtOverbought, wtCross, wtCrossUp, wtCrossDown, wtCross_last, wtCrossUp_last, wtCrossDown_last, vwapData] = f_wavetrend(wtMASource, wtChannelLen, wtAverageLen, wtMALen, timeframe.period)
+ 
 // *************************************************************************************************************************************************************************************************************************************************************************
 // STRATEGIES
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -294,8 +356,16 @@ longSignal5 = long5 and long5[delay - 1] and not long5[delay]
 shortSignal5 = short5 and short5[delay - 1] and not short5[delay]
 closelong5 = short5 and not long5[delay]
 closeshort5 = long5 and not short5[delay]
+
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * STRATEGY 6: POTENTIAL TOP/BOTTOM
+// * STRATEGY 7: VWAP Cross
+// *************************************************************************************************************************************************************************************************************************************************************************
+longSignal7 = (str_7 ? ta.crossover(vwapData, vwapHigh) : true)
+shortSignal7 = (str_7 ? ta.crossunder(vwapData, vwapLow) : true)
+
+
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * STRATEGY 6 (END): POTENTIAL TOP/BOTTOM
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Combination RSI, Stoch RSI, MACD, volume, and weighted-strategy to detect potential TOP/BOTTOMS areas
 volumeRSI_condition = volume[2] > volume[3] and volume[2] > volume[4] and volume[2] > volume[5]
@@ -305,13 +375,15 @@ condition_OS1 = isRsiOS2 and (isRsiOS or volume < ma('MA', volume, 20) / 2) and 
 condition_OB2 = volume[2] / volume[1] > (1.0 + longTrailPerc) and isRsiOB and volumeRSI_condition
 condition_OS2 = volume[2] / volume[1] > (1.0 + shortTrailPerc) and isRsiOS and volumeRSI_condition
 
-condition_OB3 = weight_total(MACD < signal, isRsiOB, isRsiOB2, short4, short5) >= weightTrigger
-condition_OS3 = weight_total(MACD > signal, isRsiOS, isRsiOS2, long4, long5) >= weightTrigger
+condition_OB3 = weight_total(MACD < signal, isRsiOB, isRsiOB2, short4, short5, shortSignal7) >= weightTrigger
+condition_OS3 = weight_total(MACD > signal, isRsiOS, isRsiOS2, long4, long5, longSignal7) >= weightTrigger
 
 condition_OB = (condition_OB1 or condition_OB2)
 condition_OS = (condition_OS1 or condition_OS2)
 condition_OB_several = condition_OB[1] and condition_OB[2] or condition_OB[1] and condition_OB[3] or condition_OB[1] and condition_OB[4] or condition_OB[1] and condition_OB[5] or condition_OB[1] and condition_OB[6] or condition_OB[1] and condition_OB[7] 
 condition_OS_several = condition_OS[1] and condition_OS[2] or condition_OS[1] and condition_OS[3] or condition_OS[1] and condition_OS[4] or condition_OS[1] and condition_OS[5] or condition_OS[1] and condition_OS[6] or condition_OS[1] and condition_OS[7] 
+
+
 // *************************************************************************************************************************************************************************************************************************************************************************
 // STRATEGY ENTRIES AND EXITS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -330,12 +402,14 @@ if time >= start and time <= end
             weightStr4 := 0
         if not str_5
             weightStr5 := 0
+        if not str_7
+            weightStr7 := 0
         if allowShorts == true
-            w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
+            w_total = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5, shortSignal7)
             if w_total >= weightTrigger
                 strategy.entry('Short', strategy.short)
         if allowLongs == true
-            w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
+            w_total = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5, longSignal7)
             if w_total >= weightTrigger
                 strategy.entry('Long', strategy.long)
     else
@@ -350,6 +424,8 @@ if time >= start and time <= end
                 strategy.entry('Short', strategy.short, when=shortSignal4)
             if str_5
                 strategy.entry('Short', strategy.short, when=shortSignal5)
+            if str_7
+                strategy.entry('Short', strategy.short, when=shortSignal7)
         if allowLongs == true
             if str_1
                 strategy.entry('Long', strategy.long, when=longSignal1)
@@ -361,6 +437,8 @@ if time >= start and time <= end
                 strategy.entry('Long', strategy.long, when=longSignal4)
             if str_5
                 strategy.entry('Long', strategy.long, when=longSignal5)
+            if str_7
+                strategy.entry('Long', strategy.long, when=longSignal7)
     // ***************************************************************************************************************************************************************************
     // * Set Take Profits
     // ***************************************************************************************************************************************************************************
@@ -587,8 +665,8 @@ plotshape(condition_OS_several ? up : na, title='Bottom', text='B', location=loc
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Buy/Sell signals
 // *************************************************************************************************************************************************************************************************************************************************************************
-w_total_long = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5)
-w_total_short = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5)
+w_total_long = weight_total(longSignal1, longSignal2, longSignal3, longSignal4, longSignal5, longSignal7)
+w_total_short = weight_total(shortSignal1, shortSignal2, shortSignal3, shortSignal4, shortSignal5, shortSignal7)
 plotshape(w_total_long >= weightTrigger and showsignals ? up : na, title='Buy Weigthed strategy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0))
 plotshape(w_total_short >= weightTrigger and showsignals ? dn : na, title='Sell Weigthed strategy', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0))
 // *************************************************************************************************************************************************************************************************************************************************************************
