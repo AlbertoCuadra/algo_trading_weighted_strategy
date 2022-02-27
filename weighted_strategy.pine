@@ -89,10 +89,10 @@ MA22Period = input.int(88, 'MA 2', minval=1, maxval=9999, step=1, group='Strateg
 MA22Type = input.string('EMA', 'MA2 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 5: MA CROSS')
 MA22Source = input.source(close, 'MA2 Source', group='Strategy 5: MA CROSS')
 
-// * Inputs strategy 7: VWAP Cross
-str_7 = input.bool(true, 'Strategy 7: VWAP CROSS', group='Strategy 7: VWAP CROSS')
-vwapHigh = input.int(5, title="VWAP Long Cross", group='Strategy 7: VWAP CROSS') 
-vwapLow  = input.int(-5, title="VWAP Short Cross", group='Strategy 7: VWAP CROSS')
+// * Inputs strategy 7: VWAP Over
+str_7 = input.bool(true, 'Strategy 7: VWAP OVER', group='Strategy 7: VWAP OVER')
+vwapHigh = input.int(5, title="VWAP Long Over", group='Strategy 7: VWAP OVER') 
+vwapLow  = input.int(-5, title="VWAP Short Over", group='Strategy 7: VWAP OVER')
 
 // * Inputs Potential TOP/BOTTOM
 str_6 = input.bool(false, 'Close order at potential Top/Bottom', group='Potential TOP/BOTTOM')
@@ -358,10 +358,10 @@ closelong5 = short5 and not long5[delay]
 closeshort5 = long5 and not short5[delay]
 
 // *************************************************************************************************************************************************************************************************************************************************************************
-// * STRATEGY 7: VWAP Cross
+// * STRATEGY 7: VWAP Over
 // *************************************************************************************************************************************************************************************************************************************************************************
-longSignal7 = (str_7 ? ta.crossover(vwapData, vwapHigh) : true)
-shortSignal7 = (str_7 ? ta.crossunder(vwapData, vwapLow) : true)
+longSignal7 = (str_7 ? (vwapData > vwapHigh) : true)
+shortSignal7 = (str_7 ? (vwapData < vwapLow) : true)
 
 
 // *************************************************************************************************************************************************************************************************************************************************************************
