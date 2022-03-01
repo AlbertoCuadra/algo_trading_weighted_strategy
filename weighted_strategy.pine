@@ -1,5 +1,14 @@
-// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
-// © accry
+// *************************************************************************************************************************************************************************************************************************************************************************
+// Acrypto - Weigthed Strategy v1.3.0
+// Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
+//
+//
+// You can support the project on https://www.buymeacoffee.com/acuadra
+//
+// License: © accry - Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+//
+// Last update: 01/03/2022
+// *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
 strategy(title='Acrypto - Weighted Strategy', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
