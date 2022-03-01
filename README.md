@@ -10,7 +10,7 @@ I have been developing a fully customizable algorithm in pinescript for the last
 
 Moreover, the algo includes stop losses criteria and a taking profit strategy. The algo must be optimized for the desired asset to achieves its full potential. The 4H dataframe give good results. The algo has been tested for several asset (same dataframe, different optimization values).
 
-To set an order, first, the algorithm calculates the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are satisfied (in case the weight of each strategy is the same, e.g., same relevance over the rest). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
+To set an order, first, the algorithm calculates the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are satisfied (in case the weight of each strategy is the same, i.e., same relevance over the rest). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
 ## Features:
 
