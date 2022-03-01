@@ -84,7 +84,9 @@ MA22Source = input.source(close, 'MA2 Source', group='Strategy 5: MA CROSS')
 // * Inputs Potential TOP/BOTTOM
 str_6 = input.bool(false, 'Close order at potential Top/Bottom', group='Potential TOP/BOTTOM')
 topQty = input.float(30, 'Top - take x (%) from the remaining position', minval=0.0, maxval=100, step=1, group='Potential TOP/BOTTOM')
-bottomQty = input.float(30, 'Bottom - take x (%) from the remaining position', minval=0.0, maxval=100, step=1, group='Potential TOP/BOTTOM')
+bottomQty = input.float(30, 'Bottom - take x (%) from the remaining position', minval=0.0, maxval=100, step=1, group='Potential TOP/BOTTOM') 
+source_6_top = input.source(close, 'TP-TOP at previous?', group='Potential TOP/BOTTOM')
+source_6_bottom = input.source(close, 'TP-BOTTOM at previous?', group='Potential TOP/BOTTOM')
 longTrailPerc = input.float(150, 'Trail volume Long (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
 shortTrailPerc = input.float(150, 'Trail volume Short (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
 // * Miscellaneous
@@ -367,7 +369,7 @@ if time >= start and time <= end
     if strategy.position_size != 0 and takeProfits and since_entry == 0
         for i = 1 to maxTP
             id = 'TP ' + str.tostring(i)
-            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP')
+            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment=id)
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
@@ -522,14 +524,20 @@ if time >= start and time <= end
         strategy.close('Long', when=closelong1 or closelong5, qty_percent=100, comment='LONG')
     if allowLongs == false and allowShorts == true
         strategy.close('Short', when=closeshort1 or closeshort5, qty_percent=100, comment='SHORT')
-    if allowShorts == true and strategy.position_size < 0 and stoploss
+    if allowShorts == true and strategy.position_size < 0 and stoploss and since_entry > 0
         strategy.close('Short', when=stopSource >= price_stop_short, qty_percent=100, comment='STOP')
         if str_6
-            strategy.close('Short', when=condition_OS_several, qty_percent=bottomQty, comment='TP')
-    if allowLongs == true and strategy.position_size > 0 and stoploss
+            if topQty == 100
+                strategy.close('Short', when=condition_OS_several, qty_percent=bottomQty, comment='STOP')
+            else    
+                strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottomQty, comment='TP-B')
+    if allowLongs == true and strategy.position_size > 0 and stoploss and since_entry > 0
         strategy.close('Long', when=stopSource <= price_stop_long, qty_percent=100, comment='STOP')
         if str_6
-            strategy.close('Long', when=condition_OB_several, qty_percent=topQty, comment='TP')
+            if topQty == 100
+                strategy.close('Long', when=condition_OB_several, qty_percent=topQty, comment='STOP')
+            else
+                strategy.exit('Long', when=condition_OB_several, limit=source_6_top[1], qty_percent=topQty, comment='TP-T')
 // *************************************************************************************************************************************************************************************************************************************************************************
 // PLOTS
 // *************************************************************************************************************************************************************************************************************************************************************************
