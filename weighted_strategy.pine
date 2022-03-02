@@ -36,7 +36,7 @@ movestoploss= input.string('TP-2', 'Move stop loss', options=['None', 'Percentag
 movestoploss_entry = input.bool(false, 'Move stop loss to entry', group='Stop loss')
 stoploss_perc= input.float(6.0, 'Stop Loss %', minval=0, maxval=100, group='Stop loss') * 0.01
 move_stoploss_factor = input.float(20.0, 'Move stop loss factor %', group='Stop loss') * 0.01 + 1
-stopSource = input.source(hl2, 'Stop Source', group='Stop loss')
+stop_source = input.source(hl2, 'Stop Source', group='Stop loss')
 // * Take profits
 take_profits= input.bool(true, 'Take profits', group='Take Profits')
 // retrade= input.bool(false, 'Retrade', group='Take Profits')
@@ -537,14 +537,14 @@ if time >= start and time <= end
     if allow_longs == false and allow_shorts == true
         strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT')
     if allow_shorts == true and strategy.position_size < 0 and stoploss and since_entry > 0
-        strategy.close('Short', when=stopSource >= price_stop_short, qty_percent=100, comment='STOP')
+        strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP')
         if str_6
             if top_qty == 100
                 strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP')
             else    
                 strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B')
     if allow_longs == true and strategy.position_size > 0 and stoploss and since_entry > 0
-        strategy.close('Long', when=stopSource <= price_stop_long, qty_percent=100, comment='STOP')
+        strategy.close('Long', when=stop_source <= price_stop_long, qty_percent=100, comment='STOP')
         if str_6
             if top_qty == 100
                 strategy.close('Long', when=condition_OB_several, qty_percent=top_qty, comment='STOP')
