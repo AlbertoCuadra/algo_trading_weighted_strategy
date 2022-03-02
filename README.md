@@ -1,6 +1,6 @@
 ## Weighted strategy
 
-I have been developing a fully customizable algorithm in pinescript for the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently a set of 5 strategies have been implemented:
+I have been developing a fully customizable algorithmic trading strategy in pinescript for the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently a set of 5 strategies have been implemented:
 
 * `MACD`
 * `Stochastic RSI`
