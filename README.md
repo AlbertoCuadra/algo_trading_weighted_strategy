@@ -15,7 +15,7 @@ To set an order, first, the algorithm calculates the weight_strategy, which repr
 ## Features:
 
 * The algorithm allows to trade with long, short or both positions.
-* `Backtest the algorithm` over a defined interval (data stamp), e.g., from 01/01/2021
+* `Backtest the algorithm` over a defined interval (data stamp), e.g., from 01/01/2021 to 01/01/2022.
 * Set stoploss (SL) orders based on a percentage of the previous candle source, e.g., close or hl2 (high + low)/2. Only close the position after the candle is close!
 * Set SL to previous TP targets
 * Set SL to the average position (after TP)
