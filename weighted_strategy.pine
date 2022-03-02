@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.3.1
+// Acrypto - Weigthed Strategy v1.3.2
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -22,7 +22,6 @@ strategy(title='Acrypto - Weighted Strategy', overlay=true, precision=2, commiss
 // * Type trading
 allow_longs = input.bool(true, 'Allow Longs', group='Trading type')
 allow_shorts= input.bool(true, 'Allow Shorts', group='Trading type')
-type_entry_long= input.bool(true, 'Allow Shorts', group='Trading type')
 // * Datastamp
 from_day= input.int(1, 'From Day', minval=1, maxval=31, group='DataStamp')
 from_month = input.int(1, 'From Month', minval=1, maxval=12, group='DataStamp')
