@@ -12,6 +12,20 @@ Moreover, the algo includes stop losses criteria and a taking profit strategy. T
 
 To set an order, first, the algorithm calculates the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are satisfied (in case the weight of each strategy is the same, i.e., same relevance over the rest). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
+## Pro and Premium version
+There are two new versions of the algo on development:
+* Pro:
+  + complete alert system
+  + access to a telegram channel with instant signals of BTC/USDT
+  + new entry strategy based on limit orders instead of market orders as in the basic plan
+  + more control of the stop-loss and take profits orders
+* Premium:
+  + all of pro version
+  + kernel based on more sophisticated indicators
+  + access to the premium telegram channel with instant signals of BTC/USDT and few altcoins
+  + the premium telegram channel allows auto-trading with the use of a secure third-platform API 
+  + access to more reliable signals based on an in-house optimization algorithm
+
 ## Features:
 
 * The algorithm allows to trade with long, short or both positions.
