@@ -15,15 +15,15 @@ To set an order, first, the algorithm calculates the weight_strategy, which repr
 ## Pro and Premium version
 There are two new versions of the algo on development:
 * Pro:
-  + complete alert system
-  + access to a telegram channel with instant signals of BTC/USDT
+  + complete alert system ✅
+  + access to a telegram channel with instant signals of BTC/USDT ✅
   + new entry strategy based on limit orders instead of market orders as in the basic plan
   + more control of the stop-loss and take profits orders
 * Premium:
   + all of pro version
   + kernel based on more sophisticated indicators
-  + access to the premium telegram channel with instant signals of BTC/USDT and few altcoins
-  + the premium telegram channel allows auto-trading with the use of a secure third-platform API 
+  + access to the premium telegram channel with instant signals of BTC/USDT and few altcoins ✅
+  + the premium telegram channel allows auto-trading with the use of a secure third-platform API ✅
   + access to more reliable signals based on an in-house optimization algorithm
 
 ## Features:
