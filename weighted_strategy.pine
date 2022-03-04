@@ -445,8 +445,8 @@ if time >= start and time <= end
     if strategy.position_size != 0 and takeProfits and since_entry == 0
         for i = 1 to maxTP
             id = 'TP ' + str.tostring(i)
-            msg = "TP Hit: " + str.tostring(i))
-            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP', alert_message=msg
+            msg = 'TP Hit ' + str.tostring(i)
+            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP', alert_message=msg)
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
@@ -609,7 +609,6 @@ if time >= start and time <= end
         strategy.close('Long', when=stopSource <= price_stop_long, qty_percent=100, comment='STOP', alert_message='!close')
         if str_6
             strategy.close('Long', when=condition_OB_several, qty_percent=topQty, comment='TP')
-
 // *************************************************************************************************************************************************************************************************************************************************************************
 // PLOTS
 // *************************************************************************************************************************************************************************************************************************************************************************
