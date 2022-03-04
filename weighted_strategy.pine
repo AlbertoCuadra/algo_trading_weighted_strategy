@@ -446,7 +446,7 @@ if time >= start and time <= end
         for i = 1 to maxTP
             id = 'TP ' + str.tostring(i)
             msg = "TP Hit: " + str.tostring(i))
-            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP', alert_message=msg)
+            strategy.exit(id=id, limit=price_takeProfit(ProfitPerc, i), qty_percent=ProfitQty, comment='TP', alert_message=msg
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
