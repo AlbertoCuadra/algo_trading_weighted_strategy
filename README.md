@@ -12,7 +12,7 @@ Moreover, the algo includes stop losses criteria and a taking profit strategy. T
 
 To set an order, first, the algorithm calculates the weight_strategy, which represents a value from 0 to 5 of the number of strategies that are satisfied (in case the weight of each strategy is the same, i.e., same relevance over the rest). To open a position, the value of weight_strategy must be greater than the value of weight_signal, by default 2. Modify the indicator parameters for the desired asset and data frame. Set stop-loss and take profit criteria.
 
-## Pro and Premium version
+## Pro and Premium version (in Development)
 There are two additional new versions of the algorithm under development:
 * Pro:
   + complete alert system ✅ 🐛
