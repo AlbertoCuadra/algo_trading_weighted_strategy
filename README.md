@@ -22,6 +22,7 @@ There are two additional new versions of the algorithm under development:
 * Premium:
   + all of pro version
   + kernel based on more sophisticated indicators 👨‍🏭
+  + compatible with 3Commas
   + access to the premium telegram channel with instant signals of BTC/USDT and few altcoins ✅ 🐛
   + the premium telegram channel allows auto-trading with the use of a secure third-platform API ✅ 🐛
   + access to more reliable signals based on an in-house optimization algorithm 👨‍🏭
