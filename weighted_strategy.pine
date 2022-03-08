@@ -103,8 +103,13 @@ long_trail_perc = input.float(150, 'Trail volume Long (%)', minval=0.0, step=1, 
 short_trail_perc = input.float(150, 'Trail volume Short (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
 // * Miscellaneous
 show_signals = input.bool(true, 'Show Buy/Sell Signals ?', group='Miscellaneous')
-
-
+// * Alarms
+alarm_label_long = input.string('Buy', 'Label open long', group='Basic alarm system')
+alarm_label_short = input.string('Sell', 'Label open short', group='Basic alarm system')
+alarm_label_close_long = input.string('Close long', 'Label close long', group='Basic alarm system')
+alarm_label_close_short = input.string('Close short', 'Label close short', group='Basic alarm system')
+alarm_label_TP = input.string('TP', 'Label Take Profit', group='Basic alarm system')
+alarm_label_SL = input.string('SL', 'Label Stop-Loss', group='Basic alarm system')
 // *************************************************************************************************************************************************************************************************************************************************************************
 // ABBREVIATIONS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -345,41 +350,41 @@ if time >= start and time <= end
         if allow_shorts == true
             w_total = weight_total(short_signal1, short_signal2, short_signal3, short_signal4, short_signal5)
             if w_total >= weight_trigger
-                strategy.entry('Short', strategy.short, alert_message='Sell')
+                strategy.entry('Short', strategy.short, alert_message=alarm_label_short)
         if allow_longs == true
             w_total = weight_total(long_signal1, long_signal2, long_signal3, long_signal4, long_signal5)
             if w_total >= weight_trigger
-                strategy.entry('Long', strategy.long, alert_message='Buy')
+                strategy.entry('Long', strategy.long, alert_message=alarm_label_long)
     else
         if allow_shorts == true
             if str_1
-                strategy.entry('Short', strategy.short, when=short_signal1, alert_message='Sell')
+                strategy.entry('Short', strategy.short, when=short_signal1, alert_message=alarm_label_short)
             if str_2
-                strategy.entry('Short', strategy.short, when=short_signal2, alert_message='Sell')
+                strategy.entry('Short', strategy.short, when=short_signal2, alert_message=alarm_label_short)
             if str_3
-                strategy.entry('Short', strategy.short, when=short_signal3, alert_message='Sell')
+                strategy.entry('Short', strategy.short, when=short_signal3, alert_message=alarm_label_short)
             if str_4
-                strategy.entry('Short', strategy.short, when=short_signal4, alert_message='Sell')
+                strategy.entry('Short', strategy.short, when=short_signal4, alert_message=alarm_label_short)
             if str_5
-                strategy.entry('Short', strategy.short, when=short_signal5, alert_message='Sell')
+                strategy.entry('Short', strategy.short, when=short_signal5, alert_message=alarm_label_short)
         if allow_longs == true
             if str_1
-                strategy.entry('Long', strategy.long, when=long_signal1, alert_message='Buy')
+                strategy.entry('Long', strategy.long, when=long_signal1, alert_message=alarm_label_long)
             if str_2
-                strategy.entry('Long', strategy.long, when=long_signal2, alert_message='Buy')
+                strategy.entry('Long', strategy.long, when=long_signal2, alert_message=alarm_label_long)
             if str_3
-                strategy.entry('Long', strategy.long, when=long_signal3, alert_message='Buy')
+                strategy.entry('Long', strategy.long, when=long_signal3, alert_message=alarm_label_long)
             if str_4
-                strategy.entry('Long', strategy.long, when=long_signal4, alert_message='Buy')
+                strategy.entry('Long', strategy.long, when=long_signal4, alert_message=alarm_label_long)
             if str_5
-                strategy.entry('Long', strategy.long, when=long_signal5, alert_message='Buy')
+                strategy.entry('Long', strategy.long, when=long_signal5, alert_message=alarm_label_long)
     // ***************************************************************************************************************************************************************************
     // * Set Take Profits
     // ***************************************************************************************************************************************************************************
     if strategy.position_size != 0 and take_profits and since_entry == 0
         for i = 1 to MAX_TP
             id = 'TP ' + str.tostring(i)
-            strategy.exit(id=id, limit=price_takeProfit(profit_perc, i), qty_percent=profit_qty, comment=id, alert_message='TP')
+            strategy.exit(id=id, limit=price_takeProfit(profit_perc, i), qty_percent=profit_qty, comment=id, alert_message=alarm_label_TP)
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
@@ -531,23 +536,23 @@ if time >= start and time <= end
     // * Set Exits
     // ***************************************************************************************************************************************************************************
     if allow_longs == true and allow_shorts == false
-        strategy.close('Long', when=close_long1 or close_long5, qty_percent=100, comment='LONG', alert_message='Close long')
+        strategy.close('Long', when=close_long1 or close_long5, qty_percent=100, comment='LONG', alert_message=alarm_label_close_long)
     if allow_longs == false and allow_shorts == true
-        strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT', alert_message='Close long')
+        strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
     if allow_shorts == true and strategy.position_size < 0 and stoploss and since_entry > 0
-        strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP', alert_message='Close short')
+        strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP', alert_message=alarm_label_close_short)
         if str_6
             if top_qty == 100
-                strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP', alert_message='Close short')
+                strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP', alert_message=alarm_label_close_short)
             else    
-                strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B', alert_message='TP')
+                strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B', alert_message=alarm_label_TP)
     if allow_longs == true and strategy.position_size > 0 and stoploss and since_entry > 0
-        strategy.close('Long', when=stop_source <= price_stop_long, qty_percent=100, comment='STOP', alert_message='Stop')
+        strategy.close('Long', when=stop_source <= price_stop_long, qty_percent=100, comment='STOP', alert_message=alarm_label_SL)
         if str_6
             if top_qty == 100
-                strategy.close('Long', when=condition_OB_several, qty_percent=top_qty, comment='STOP', alert_message='Stop')
+                strategy.close('Long', when=condition_OB_several, qty_percent=top_qty, comment='STOP', alert_message=alarm_label_SL)
             else
-                strategy.exit('Long', when=condition_OB_several, limit=source_6_top[1], qty_percent=top_qty, comment='TP-T', alert_message='TP')
+                strategy.exit('Long', when=condition_OB_several, limit=source_6_top[1], qty_percent=top_qty, comment='TP-T', alert_message=alarm_label_TP)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Data window - debugging
 // *************************************************************************************************************************************************************************************************************************************************************************
