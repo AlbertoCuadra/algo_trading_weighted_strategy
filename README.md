@@ -54,7 +54,7 @@ There are two additional new versions of the algorithm under development:
 * Customize the well documented MA cross strategy.
 * `Buy/sell labels for possible reentries`.
 * Monthly table performance.
-* Alarm system.
+* Configurable alarm system.
 
 ---
 ⚠️ **NOTE**
