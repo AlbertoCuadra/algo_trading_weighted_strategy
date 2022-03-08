@@ -5,9 +5,10 @@
 //
 // You can support the project on https://www.buymeacoffee.com/acuadra
 //
-// License: © accry - This work is under a GPLv3 License at https://www.gnu.org/licenses/gpl-3.0.html
+// License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+//                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 04/03/2022
+// Last update: 08/03/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
 strategy(title='Acrypto - Weighted Strategy', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
