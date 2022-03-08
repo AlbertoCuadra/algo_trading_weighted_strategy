@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.1
+// Acrypto - Weigthed Strategy v1.4.2
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -11,7 +11,7 @@
 // Last update: 08/03/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.1', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.2', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -316,8 +316,8 @@ close_short5 = long5 and not short5[delay_cross]
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Combination RSI, Stoch RSI, MACD, volume, and weighted-strategy to detect potential TOP/BOTTOMS areas
 volumeRSI_condition = volume[2] > volume[3] and volume[2] > volume[4] and volume[2] > volume[5]
-condition_OB1 = isRsiOB2 and (isRsiOB or volume < ma('MA', volume, 20) / 2) and volumeRSI_condition
-condition_OS1 = isRsiOS2 and (isRsiOS or volume < ma('MA', volume, 20) / 2) and volumeRSI_condition
+condition_OB1 = isRsiOB2 and (isRsiOB or volume < ma('SMA', volume, 20) / 2) and volumeRSI_condition
+condition_OS1 = isRsiOS2 and (isRsiOS or volume < ma('SMA', volume, 20) / 2) and volumeRSI_condition
 
 condition_OB2 = volume[2] / volume[1] > (1.0 + long_trail_perc) and isRsiOB and volumeRSI_condition
 condition_OS2 = volume[2] / volume[1] > (1.0 + short_trail_perc) and isRsiOS and volumeRSI_condition
