@@ -1,5 +1,14 @@
 ## Weighted strategy
 
+
+
+
+[![tradingview](https://img.shields.io/badge/Post-TradingView-%23e32b3e)](https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/)
+![last modified](https://img.shields.io/github/last-commit/AlbertoCuadra/algo_trading_weighted_strategy)
+[![Github All Releases](https://img.shields.io/github/downloads/AlbertoCuadra/algo_trading_weighted_strategy/total)]()
+[![license](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-%23299489)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![referral](https://img.shields.io/badge/Referral-TradingView-%23f08f07)](https://www.tradingview.com/gopro/?share_your_love=accry)
+
 I have been developing a fully customizable algorithmic trading strategy in pinescript for the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently a set of 5 strategies have been implemented:
 
 * `MACD`
