@@ -5,7 +5,7 @@
 
 [![tradingview](https://img.shields.io/badge/Post-TradingView-%23e32b3e)](https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/)
 ![last modified](https://img.shields.io/github/last-commit/AlbertoCuadra/algo_trading_weighted_strategy)
-[![Github All Releases](https://img.shields.io/github/downloads/AlbertoCuadra/algo_trading_weighted_strategy/total)]()
+[![Github All Releases](https://img.shields.io/github/downloads/AlbertoCuadra/algo_trading_weighted_strategy/total.svg)]()
 [![license](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-%23299489)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![referral](https://img.shields.io/badge/Referral-TradingView-%23f08f07)](https://www.tradingview.com/gopro/?share_your_love=accry)
 
