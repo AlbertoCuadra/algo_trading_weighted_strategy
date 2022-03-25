@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.2
+// Acrypto - Weigthed Strategy v1.4.3
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -8,7 +8,7 @@
 // License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 //                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 08/03/2022
+// Last update: 25/03/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
 strategy(title='Acrypto - Weighted Strategy v1.4.2', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
@@ -538,12 +538,12 @@ if time >= start and time <= end
     if allow_longs == true and allow_shorts == false
         strategy.close('Long', when=close_long1 or close_long5, qty_percent=100, comment='LONG', alert_message=alarm_label_close_long)
     if allow_longs == false and allow_shorts == true
-        strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+        strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_short)
     if allow_shorts == true and strategy.position_size < 0 and stoploss and since_entry > 0
-        strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP', alert_message=alarm_label_close_short)
+        strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP', alert_message=alarm_label_SL)
         if str_6
             if top_qty == 100
-                strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP', alert_message=alarm_label_close_short)
+                strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP', alert_message=alarm_label_SL)
             else    
                 strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B', alert_message=alarm_label_TP)
     if allow_longs == true and strategy.position_size > 0 and stoploss and since_entry > 0
