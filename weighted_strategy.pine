@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.3
+// Acrypto - Weigthed Strategy v1.4.4
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -8,10 +8,10 @@
 // License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 //                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 25/03/2022
+// Last update: 09/04/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.3', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.4', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -265,6 +265,8 @@ isRsiOS = k <= short_RSI
 // * Conditions
 long_signal2 = isRsiOS[delay_srsi] and not isRsiOB and since_entry >= delay_exit and since_close >= delay_exit
 short_signal2 = isRsiOB[delay_srsi] and not isRsiOS and since_entry >= delay_exit and since_close >= delay_exit
+close_long2 = short_signal2
+close_short2 = long_signal2
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 3: RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -274,6 +276,8 @@ isRsiOS2 = rsi <= short_RSI2
 // * Conditions
 long_signal3 = isRsiOS2[delay_rsi] and not isRsiOB2 and since_entry >= delay_exit and since_close >= delay_exit
 short_signal3 = isRsiOB2[delay_rsi] and not isRsiOS2 and since_entry >= delay_exit and since_close >= delay_exit
+close_long3 = short_signal3
+close_short3 = long_signal3
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 4: SUPERTREND
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -297,6 +301,8 @@ short4 = trend == -1
 long_signal4 = trend == 1 and trend[delay_super - 1] == 1 and trend[delay_super] == -1
 short_signal4 = trend == -1 and trend[delay_super - 1] == -1 and trend[delay_super] == 1
 changeCond = trend != trend[1]
+close_long4 = short_signal4
+close_short4 = short_signal4
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 5: MA CROSS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -536,9 +542,35 @@ if time >= start and time <= end
     // * Set Exits
     // ***************************************************************************************************************************************************************************
     if allow_longs == true and allow_shorts == false
-        strategy.close('Long', when=close_long1 or close_long5, qty_percent=100, comment='LONG', alert_message=alarm_label_close_long)
+        if str_0
+            w_total = weight_total(short_signal1, short_signal2, short_signal3, short_signal4, short_signal5)
+            strategy.close('Long', when=w_total>=weight_trigger, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+        else
+            if str_1
+                strategy.close('Long', when=close_long1, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+            if str_2
+                strategy.close('Long', when=close_long2, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+            if str_3
+                strategy.close('Long', when=close_long3, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+            if str_4
+                strategy.close('Long', when=close_long4, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
+            if str_5
+                strategy.close('Long', when=close_long5, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_long)
     if allow_longs == false and allow_shorts == true
-        strategy.close('Short', when=close_short1 or close_short5, qty_percent=100, comment='SHORT', alert_message=alarm_label_close_short)
+        if str_0
+            w_total = weight_total(long_signal1, long_signal2, long_signal3, long_signal4, long_signal5)
+            strategy.close('Short', when=w_total>=weight_trigger, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
+        else
+            if str_1
+                strategy.close('Short', when=close_long1, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
+            if str_2
+                strategy.close('Short', when=close_long2, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
+            if str_3
+                strategy.close('Short', when=close_long3, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
+            if str_4
+                strategy.close('Short', when=close_long4, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
+            if str_5
+                strategy.close('Short', when=close_long5, qty_percent=100, comment='LONG', alert_message=alarm_label_close_short)
     if allow_shorts == true and strategy.position_size < 0 and stoploss and since_entry > 0
         strategy.close('Short', when=stop_source >= price_stop_short, qty_percent=100, comment='STOP', alert_message=alarm_label_SL)
         if str_6
