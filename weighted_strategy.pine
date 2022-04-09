@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.4
+// Acrypto - Weigthed Strategy v1.4.5
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -11,7 +11,7 @@
 // Last update: 09/04/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.4', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.5', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -108,7 +108,8 @@ alarm_label_long = input.string('Buy', 'Label open long', group='Basic alarm sys
 alarm_label_short = input.string('Sell', 'Label open short', group='Basic alarm system')
 alarm_label_close_long = input.string('Close long', 'Label close long', group='Basic alarm system')
 alarm_label_close_short = input.string('Close short', 'Label close short', group='Basic alarm system')
-alarm_label_TP = input.string('TP', 'Label Take Profit', group='Basic alarm system')
+alarm_label_TP_long = input.string('TP long', 'Label Take Profit long', group='Basic alarm system')
+alarm_label_TP_short = input.string('TP short', 'Label Take Profit short', group='Basic alarm system')
 alarm_label_SL = input.string('SL', 'Label Stop-Loss', group='Basic alarm system')
 // *************************************************************************************************************************************************************************************************************************************************************************
 // ABBREVIATIONS
@@ -198,6 +199,14 @@ weight_values(signal) =>
 // *************************************************************************************************************************************************************************************************************************************************************************
 weight_total(signal1, signal2, signal3, signal4, signal5) =>
     weight_str1 * weight_values(signal1) + weight_str2 * weight_values(signal2) + weight_str3 * weight_values(signal3) + weight_str4 * weight_values(signal4) + weight_str5 * weight_values(signal5)
+// *************************************************************************************************************************************************************************************************************************************************************************
+// * Set alert TP message
+// *************************************************************************************************************************************************************************************************************************************************************************
+set_alarm_label_TP() =>
+    if strategy.position_size > 0
+        alarm_label_TP_long
+    else if strategy.position_size < 0
+        alarm_label_TP_short 
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Color
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -390,7 +399,7 @@ if time >= start and time <= end
     if strategy.position_size != 0 and take_profits and since_entry == 0
         for i = 1 to MAX_TP
             id = 'TP ' + str.tostring(i)
-            strategy.exit(id=id, limit=price_takeProfit(profit_perc, i), qty_percent=profit_qty, comment=id, alert_message=alarm_label_TP)
+            strategy.exit(id=id, limit=price_takeProfit(profit_perc, i), qty_percent=profit_qty, comment=id, alert_message=set_alarm_label_TP())
     // ***************************************************************************************************************************************************************************
     // * Set Stop loss
     // ***************************************************************************************************************************************************************************
@@ -577,14 +586,14 @@ if time >= start and time <= end
             if top_qty == 100
                 strategy.close('Short', when=condition_OS_several, qty_percent=bottom_qty, comment='STOP', alert_message=alarm_label_SL)
             else    
-                strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B', alert_message=alarm_label_TP)
+                strategy.exit('Short', when=condition_OS_several, limit=source_6_bottom[1], qty_percent=bottom_qty, comment='TP-B', alert_message=set_alarm_label_TP())
     if allow_longs == true and strategy.position_size > 0 and stoploss and since_entry > 0
         strategy.close('Long', when=stop_source <= price_stop_long, qty_percent=100, comment='STOP', alert_message=alarm_label_SL)
         if str_6
             if top_qty == 100
                 strategy.close('Long', when=condition_OB_several, qty_percent=top_qty, comment='STOP', alert_message=alarm_label_SL)
             else
-                strategy.exit('Long', when=condition_OB_several, limit=source_6_top[1], qty_percent=top_qty, comment='TP-T', alert_message=alarm_label_TP)
+                strategy.exit('Long', when=condition_OB_several, limit=source_6_top[1], qty_percent=top_qty, comment='TP-T', alert_message=set_alarm_label_TP())
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Data window - debugging
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -609,7 +618,7 @@ plotchar(strategy.wintrades/strategy.closedtrades*100, "Winrate [%]", "", locati
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 1: MACD
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(trend, 'Trend', style=plot.style_columns, color=MACD > signal ? color.teal : color.gray, display=display.none, transp=30)
+plot(trend, 'Trend', style=plot.style_columns, color=MACD > signal ? color.new(color.teal, 30) : color.new(color.gray, 30), display=display.none)
 plot(MACD, 'MACD', color=color.new(color.blue, 0), display=display.none)
 plot(signal, 'Signal', color=color.new(color.orange, 0), display=display.none)
 plotshape(long_signal1 and show_signals ? up : na, 'Buy MACD', text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
@@ -649,12 +658,12 @@ plotshape(w_total_short >= weight_trigger and show_signals ? dn : na, title='Sel
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Stop loss targets
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(series=(strategy.position_size > 0) ? price_stop_long : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Long Stop Loss")
-plot(series=(strategy.position_size < 0) ? price_stop_short : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Short Stop Loss")
+plot(series=(strategy.position_size > 0) ? price_stop_long : na, color=color.new(color.gray, 30), style=plot.style_cross, linewidth=2, title="Long Stop Loss")
+plot(series=(strategy.position_size < 0) ? price_stop_short : na, color=color.new(color.gray, 30), style=plot.style_cross, linewidth=2, title="Short Stop Loss")
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * TP targets
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, color=color.aqua, style=plot.style_cross, linewidth=2, transp=30, title="Next TP")
+plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, color=color.new(color.aqua, 30), style=plot.style_cross, linewidth=2, title="Next TP")
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * All strategies
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -664,8 +673,8 @@ dnPlot = plot((short_signal1 or short_signal2 or short_signal3 or short_signal4 
 plotchar(weight_trigger, "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(w_total_long, "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weight_trigger ? color.orange : color.gray)
 plotchar(w_total_short, "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weight_trigger ? color.orange : color.gray)
-plotshape((long_signal1 or long_signal2 or long_signal3 or long_signal4 or long_signal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
-plotshape((short_signal1 or short_signal2 or short_signal3 or short_signal4 or short_signal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
+plotshape((long_signal1 or long_signal2 or long_signal3 or long_signal4 or long_signal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), display=display.none)
+plotshape((short_signal1 or short_signal2 or short_signal3 or short_signal4 or short_signal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), display=display.none)
 fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', 80))
 fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
 // *************************************************************************************************************************************************************************************************************************************************************************
