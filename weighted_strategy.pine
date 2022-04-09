@@ -609,7 +609,7 @@ plotchar(strategy.wintrades/strategy.closedtrades*100, "Winrate [%]", "", locati
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 1: MACD
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(trend, 'Trend', style=plot.style_columns, color=MACD > signal ? color.teal : color.gray, display=display.none, transp=30)
+plot(trend, 'Trend', style=plot.style_columns, color=MACD > signal ? color.new(color.teal, 30) : color.new(color.gray, 30), display=display.none)
 plot(MACD, 'MACD', color=color.new(color.blue, 0), display=display.none)
 plot(signal, 'Signal', color=color.new(color.orange, 0), display=display.none)
 plotshape(long_signal1 and show_signals ? up : na, 'Buy MACD', text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
@@ -649,12 +649,12 @@ plotshape(w_total_short >= weight_trigger and show_signals ? dn : na, title='Sel
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Stop loss targets
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(series=(strategy.position_size > 0) ? price_stop_long : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Long Stop Loss")
-plot(series=(strategy.position_size < 0) ? price_stop_short : na, color=color.gray, style=plot.style_cross, linewidth=2, transp=30, title="Short Stop Loss")
+plot(series=(strategy.position_size > 0) ? price_stop_long : na, color=color.new(color.gray, 30), style=plot.style_cross, linewidth=2, title="Long Stop Loss")
+plot(series=(strategy.position_size < 0) ? price_stop_short : na, color=color.new(color.gray, 30), style=plot.style_cross, linewidth=2, title="Short Stop Loss")
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * TP targets
 // *************************************************************************************************************************************************************************************************************************************************************************
-plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, color=color.aqua, style=plot.style_cross, linewidth=2, transp=30, title="Next TP")
+plot(strategy.position_size > 0 or strategy.position_size < 0 ? nextTP : na, color=color.new(color.aqua, 30), style=plot.style_cross, linewidth=2, title="Next TP")
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * All strategies
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -664,8 +664,8 @@ dnPlot = plot((short_signal1 or short_signal2 or short_signal3 or short_signal4 
 plotchar(weight_trigger, "Trigger strategies", "", location.top, size = size.tiny, color=color.new(color.orange, 0))
 plotchar(w_total_long, "Satisfied Long strategies", "", location.top, size = size.tiny, color=w_total_long >= weight_trigger ? color.orange : color.gray)
 plotchar(w_total_short, "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weight_trigger ? color.orange : color.gray)
-plotshape((long_signal1 or long_signal2 or long_signal3 or long_signal4 or long_signal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), size=size.tiny, display=display.none)
-plotshape((short_signal1 or short_signal2 or short_signal3 or short_signal4 or short_signal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), size=size.tiny, display=display.none)
+plotshape((long_signal1 or long_signal2 or long_signal3 or long_signal4 or long_signal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), display=display.none)
+plotshape((short_signal1 or short_signal2 or short_signal3 or short_signal4 or short_signal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), display=display.none)
 fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', 80))
 fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
 // *************************************************************************************************************************************************************************************************************************************************************************
