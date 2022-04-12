@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.5
+// Acrypto - Weigthed Strategy v1.4.6
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -8,10 +8,10 @@
 // License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 //                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 09/04/2022
+// Last update: 11/04/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.5', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.6', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -87,7 +87,7 @@ multiplier = input.float(2.4, 'ATR Multiplier', step=0.1, group='Strategy 4: Sup
 change_ATR = input.bool(true, 'Change ATR Calculation Method ?', group='Strategy 4: Supertrend')
 // * Inputs strategy 5: MA CROSS
 str_5 = input.bool(true, 'Strategy 5: MA CROSS', group='Strategy 5: MA CROSS')
-MA1_period_5 = input.int(50, 'MA 1', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
+MA1_period_5 = input.int(46, 'MA 1', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
 MA1_type_5 = input.string('EMA', 'MA1 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 5: MA CROSS')
 MA1_source_5 = input.source(close, 'MA1 Source', group='Strategy 5: MA CROSS')
 MA2_period_5 = input.int(88, 'MA 2', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
