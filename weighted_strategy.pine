@@ -90,7 +90,7 @@ str_5 = input.bool(true, 'Strategy 5: MA CROSS', group='Strategy 5: MA CROSS')
 MA1_period_5 = input.int(46, 'MA 1', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
 MA1_type_5 = input.string('EMA', 'MA1 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 5: MA CROSS')
 MA1_source_5 = input.source(close, 'MA1 Source', group='Strategy 5: MA CROSS')
-MA2_period_5 = input.int(88, 'MA 2', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
+MA2_period_5 = input.int(82, 'MA 2', minval=1, maxval=9999, step=1, group='Strategy 5: MA CROSS')
 MA2_type_5 = input.string('EMA', 'MA2 Type', options=['RMA', 'SMA', 'EMA', 'WMA', 'HMA', 'DEMA', 'TEMA', 'VWMA'], group='Strategy 5: MA CROSS')
 MA2_source_5 = input.source(close, 'MA2 Source', group='Strategy 5: MA CROSS')
 // * Inputs Potential TOP/BOTTOM
