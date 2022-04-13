@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.6
+// Acrypto - Weigthed Strategy v1.4.7
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -8,10 +8,10 @@
 // License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 //                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 11/04/2022
+// Last update: 13/04/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.6', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.7', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
