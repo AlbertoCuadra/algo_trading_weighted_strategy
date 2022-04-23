@@ -1,5 +1,5 @@
 // *************************************************************************************************************************************************************************************************************************************************************************
-// Acrypto - Weigthed Strategy v1.4.7
+// Acrypto - Weigthed Strategy v1.4.8
 // Github: https://github.com/AlbertoCuadra/algo_trading_weighted_strategy
 //
 //
@@ -8,10 +8,10 @@
 // License: © accry - This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 //                    https://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Last update: 13/04/2022
+// Last update: 23/04/2022
 // *************************************************************************************************************************************************************************************************************************************************************************
 //@version=5
-strategy(title='Acrypto - Weighted Strategy v1.4.7', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
+strategy(title='Acrypto - Weighted Strategy v1.4.8', overlay=true, precision=2, commission_value=0.075, commission_type=strategy.commission.percent, initial_capital=1000, currency=currency.USD, default_qty_type=strategy.percent_of_equity, default_qty_value=100, slippage=1)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // COMMENTS
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -101,8 +101,9 @@ source_6_top = input.source(close, 'TP-TOP at previous?', group='Potential TOP/B
 source_6_bottom = input.source(close, 'TP-BOTTOM at previous?', group='Potential TOP/BOTTOM')
 long_trail_perc = input.float(150, 'Trail volume Long (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
 short_trail_perc = input.float(150, 'Trail volume Short (%)', minval=0.0, step=1, group='Potential TOP/BOTTOM') * 0.01
-// * Miscellaneous
-show_signals = input.bool(true, 'Show Buy/Sell Signals ?', group='Miscellaneous')
+// * Flags
+FLAG_SIGNALS = input.bool(true, 'Show Buy/Sell Signals ?', group='Miscellaneous')
+FLAG_SHADOWS = input.bool(true, 'Show shadows satisfied strategies ?', group='Miscellaneous')
 // * Alarms
 alarm_label_long = input.string('Buy', 'Label open long', group='Basic alarm system')
 alarm_label_short = input.string('Sell', 'Label open short', group='Basic alarm system')
@@ -621,28 +622,28 @@ plotchar(strategy.wintrades/strategy.closedtrades*100, "Winrate [%]", "", locati
 plot(trend, 'Trend', style=plot.style_columns, color=MACD > signal ? color.new(color.teal, 30) : color.new(color.gray, 30), display=display.none)
 plot(MACD, 'MACD', color=color.new(color.blue, 0), display=display.none)
 plot(signal, 'Signal', color=color.new(color.orange, 0), display=display.none)
-plotshape(long_signal1 and show_signals ? up : na, 'Buy MACD', text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(short_signal1 and show_signals ? dn : na, 'Sell MACD', text='MACD', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(long_signal1 and FLAG_SIGNALS ? up : na, 'Buy MACD', text='MACD', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(short_signal1 and FLAG_SIGNALS ? dn : na, 'Sell MACD', text='MACD', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 2: Stoch RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
-plotshape(long_signal2 and show_signals ? up : na, title='Buy Stoch RSI', text='SRSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(short_signal2 and show_signals ? dn : na, title='Sell Stoch RSI', text='SRSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(long_signal2 and FLAG_SIGNALS ? up : na, title='Buy Stoch RSI', text='SRSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(short_signal2 and FLAG_SIGNALS ? dn : na, title='Sell Stoch RSI', text='SRSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 3: RSI
 // *************************************************************************************************************************************************************************************************************************************************************************
-plotshape(long_signal3 and show_signals ? up : na, title='Buy RSI', text='RSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(short_signal3 and show_signals ? dn : na, title='Sell RSI', text='RSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(long_signal3 and FLAG_SIGNALS ? up : na, title='Buy RSI', text='RSI', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(short_signal3 and FLAG_SIGNALS ? dn : na, title='Sell RSI', text='RSI', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 4: Supertrend
 // *************************************************************************************************************************************************************************************************************************************************************************
-plotshape(long_signal4 and show_signals ? up : na, title='Buy Supertrend', text='Supertrend', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(short_signal4 and show_signals ? dn : na, title='Sell Supertrend', text='Supertrend', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(long_signal4 and FLAG_SIGNALS ? up : na, title='Buy Supertrend', text='Supertrend', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(short_signal4 and FLAG_SIGNALS ? dn : na, title='Sell Supertrend', text='Supertrend', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * strategy 5: MA CROSS
 // *************************************************************************************************************************************************************************************************************************************************************************
-plotshape(long_signal5 and show_signals ? up : na, title='Buy MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
-plotshape(short_signal5 and show_signals ? dn : na, title='Sell MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(long_signal5 and FLAG_SIGNALS ? up : na, title='Buy MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0), display=display.none)
+plotshape(short_signal5 and FLAG_SIGNALS ? dn : na, title='Sell MA CROSS', text='MA CROSS', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0), display=display.none)
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * STRATEGY 6: POTENTIAL TOP/BOTTOM
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -653,8 +654,8 @@ plotshape(condition_OS_several ? up : na, title='Bottom', text='B', location=loc
 // *************************************************************************************************************************************************************************************************************************************************************************
 w_total_long = weight_total(long_signal1, long_signal2, long_signal3, long_signal4, long_signal5)
 w_total_short = weight_total(short_signal1, short_signal2, short_signal3, short_signal4, short_signal5)
-plotshape(w_total_long >= weight_trigger and show_signals ? up : na, title='Buy Weigthed strategy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0))
-plotshape(w_total_short >= weight_trigger and show_signals ? dn : na, title='Sell Weigthed strategy', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0))
+plotshape(w_total_long >= weight_trigger and FLAG_SIGNALS ? up : na, title='Buy Weigthed strategy', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(color.teal, 0), textcolor=color.new(color.white, 0))
+plotshape(w_total_short >= weight_trigger and FLAG_SIGNALS ? dn : na, title='Sell Weigthed strategy', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(color.gray, 0), textcolor=color.new(color.white, 0))
 // *************************************************************************************************************************************************************************************************************************************************************************
 // * Stop loss targets
 // *************************************************************************************************************************************************************************************************************************************************************************
@@ -675,8 +676,8 @@ plotchar(w_total_long, "Satisfied Long strategies", "", location.top, size = siz
 plotchar(w_total_short, "Satisfied Short strategies", "", location.top, size = size.tiny, color=w_total_long >= weight_trigger ? color.orange : color.gray)
 plotshape((long_signal1 or long_signal2 or long_signal3 or long_signal4 or long_signal5) and (w_total_long > w_total_short) ? up : na, title='UpTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.aqua, 0), display=display.none)
 plotshape((short_signal1 or short_signal2 or short_signal3 or short_signal4 or short_signal5) and (w_total_short > w_total_long) ? dn : na, title='DownTrend Begins', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.gray, 0), display=display.none)
-fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', 80))
-fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', 80))
+fill(mPlot, upPlot, title='UpTrend Highligter', color=colors('buy', FLAG_SHADOWS ? 80:100))
+fill(mPlot, dnPlot, title='DownTrend Highligter', color=colors('sell', FLAG_SHADOWS ? 80:100))
 // *************************************************************************************************************************************************************************************************************************************************************************
 // MONTHLY TABLE PERFORMANCE - Developed by @QuantNomad
 // *************************************************************************************************************************************************************************************************************************************************************************
