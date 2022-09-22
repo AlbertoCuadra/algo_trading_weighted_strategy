@@ -13,7 +13,7 @@
 **Note**
 
 
-This project is on hold until further news. The idea is to take it up again when I defend my doctoral thesis.
+This project is on hold until further news. The idea is to take it up again when I defend my doctoral thesis in June 2023.
 
 Best,
 
