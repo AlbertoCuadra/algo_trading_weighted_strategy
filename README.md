@@ -1,17 +1,12 @@
 ## Weighted strategy
 
-
-
-
 [![tradingview](https://img.shields.io/badge/Post-TradingView-%23e32b3e)](https://www.tradingview.com/script/OF3TzrNS-Acrypto-Weighted-Strategy/)
 ![last modified](https://img.shields.io/github/last-commit/AlbertoCuadra/algo_trading_weighted_strategy)
 [![license](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-%23299489)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![referral](https://img.shields.io/badge/Referral-TradingView-%23f08f07)](https://www.tradingview.com/gopro/?share_your_love=accry)
 
-
 ---
 **Note**
-
 
 This project is on hold until further news. The idea is to take it up again when I defend my PhD in June 2023.
 
@@ -22,7 +17,7 @@ Alberto
 ---
 
 
-I have been developing a fully customizable algorithmic trading strategy in pinescript for the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently a set of 5 strategies have been implemented:
+I have been developing a fully customizable Algorithmic Trading Weighted Strategy in Pine Script for the last year in my spare time. The algorithm is based on a set of well-documented strategies, each with its own weight (weighted strategy). Currently a set of 5 strategies have been implemented:
 
 * `MACD`
 * `Stochastic RSI`
@@ -90,7 +85,7 @@ There are two additional new versions of the algorithm under development:
 * The color-trend represents when at least one of the strategies is satisfied, long in teal and short in gray and there is not a draw, same number of strategies satisfies for long and short.
 * The `+` represent the next Take Profit (TP) target in teal and the Stop-Loss (SL) in gray.
 * Plot labels for every time each strategy satisfies to open a long/short position
-* Detect potential TOP and BOTTOMS based on a combination of RSI, Stoch RSI, MACD, volume, and the weighted-strategy.
+* Spot potential local Tops (T) and Bottoms (B) based on a combination of RSI, Stoch RSI, MACD, volume, and the weighted-strategy.
 
 ## Examples
 
@@ -103,7 +98,7 @@ There are two additional new versions of the algorithm under development:
 </p>
 
 ## How to use it
-Search for `Acrypto - Weighted strategy` in the indicator tab using `tradingview` and add it to your layout. Modify the indicator parameters for the desired asset and data frame.
+Search for `Acrypto - Weighted strategy` in the indicator tab using `TradingView` and add it to your layout. Modify the indicator parameters for the desired asset and data frame.
 
 If you consider paying for a subscription on TradingView (which is not required for this script), I would be very grateful if you could use my referral link :)
 
